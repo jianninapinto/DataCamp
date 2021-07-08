@@ -1,1 +1,1 @@
-# DataCamp
+# DataCamp - Introduction to SQL
