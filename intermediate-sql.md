@@ -116,7 +116,7 @@ Did their performance differ from the matches where they were the home team?
 
 - Filter the query to only include matches where Barcelona was the away team.
 
--- Select matches where Barcelona was the away team
+- Select matches where Barcelona was the away team
 
 ```sql
 SELECT  
