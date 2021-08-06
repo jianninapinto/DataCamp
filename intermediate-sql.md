@@ -615,6 +615,8 @@ WHERE
                     FROM match WHERE season = '2012/2013');
 ```
 
+# 3. Correlated Queries, Nested Queries, and Common Table Expressions
+
 **</> Basic Correlated Subqueries**
 
 In this exercise, you will practice using correlated subqueries to examine matches with scores that are extreme outliers for each country -- above 3 times the average score!
