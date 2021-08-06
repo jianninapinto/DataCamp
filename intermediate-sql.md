@@ -1,6 +1,6 @@
 # **Intermediate SQL**
 
-# 1.We'll take the CASE
+# 1. We'll take the CASE
 
 **</> Basic CASE statements**
 
@@ -344,7 +344,7 @@ ON c.id = m.country_id
 GROUP BY country;
 ```
 
-# 2.Short and Simple Subqueries
+# 2. Short and Simple Subqueries
 
 **</> Filtering using scalar subqueries**
 
