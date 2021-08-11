@@ -984,3 +984,50 @@ FROM home
 INNER JOIN away
 ON home.id = away.id;
 ```
+
+# 4. Window Functions
+
+**</> The match is OVER**
+
+In this exercise, you will revise some queries from previous chapters using the OVER() clause.
+
+- Select the match ID, country name, season, home, and away goals from the match and country tables.
+- Complete the query that calculates the average number of goals scored overall and then includes the aggregate value in each row using a window function.
+
+```sql
+SELECT 
+	-- Select the id, country name, season, home, and away goals
+	m.id, 
+    c.name AS country, 
+    m.season,
+	m.home_goal,
+	m.away_goal,
+    -- Use a window to include the aggregate average in each row
+	AVG(m.home_goal + m.away_goal) OVER() AS overall_avg
+FROM match AS m
+LEFT JOIN country AS c ON m.country_id = c.id;
+```
+
+**</> What's OVER here?**
+
+In this exercise, you will create a data set of ranked matches according to which leagues, on average, score the most goals in a match.
+
+- Select the league name and average total goals scored from league and match.
+- Complete the window function so it calculates the rank of average goals scored across all leagues in the database.
+- Order the rank by the average total of home and away goals scored.
+
+```sql
+SELECT 
+	-- Select the league name and average goals scored
+	l.name AS league,
+    AVG(m.home_goal + m.away_goal) AS avg_goals,
+    -- Rank each league according to the average goals
+    RANK() OVER(ORDER BY AVG(m.home_goal + m.away_goal)) AS league_rank
+FROM league AS l
+LEFT JOIN match AS m 
+ON l.id = m.country_id
+WHERE m.season = '2011/2012'
+GROUP BY l.name
+-- Order the query by the rank you created
+ORDER BY league_rank;
+```
