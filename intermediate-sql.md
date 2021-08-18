@@ -1187,3 +1187,31 @@ WHERE
 	season = '2014/2015'
 	AND t.team_long_name = 'Manchester United';
 ```
+
+**</> Setting up the away team CTE**
+
+Now that you have a query identifying the home team in a match, you will perform a similar set of steps to identify the away team.
+
+- Complete the CASE statement syntax.
+- Fill out the logical operators identifying each match as a win, loss, or tie for Manchester United.
+- Join the table on awayteam_id, and team_api_id.
+
+
+```sql
+SELECT 
+	m.id, 
+    t.team_long_name,
+    -- Identify matches as home/away wins or ties
+	CASE WHEN m.home_goal > away_goal THEN 'MU Loss'
+		WHEN m.home_goal < away_goal THEN 'MU Win'
+        ELSE 'Tie' END AS outcome
+-- Join team table to the match table
+FROM match AS m
+LEFT JOIN team AS t 
+ON m.awayteam_id = t.team_api_id
+WHERE 
+	-- Filter for 2014/2015 and Manchester United as the away team
+	season = '2014/2015'
+	AND t.team_long_name = 'Manchester United';
+```
+
