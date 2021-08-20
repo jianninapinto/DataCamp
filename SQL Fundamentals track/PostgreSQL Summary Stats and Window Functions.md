@@ -34,3 +34,7 @@ FROM (
 ) AS Years
 ORDER BY Year ASC;
 ```
+
+Answer: The 13th Summer Olympics were held in 1956.
+
+
