@@ -38,3 +38,20 @@ ORDER BY Year ASC;
 Answer: The 13th Summer Olympics were held in 1956.
 
 
+**</> Numbering Olympic games in descending order**
+
+You've already numbered the rows in the Summer Medals dataset. What if you need to reverse the row numbers so that the most recent Olympic games' rows have a lower number?
+
+- Assign a number to each year in which Summer Olympic games were held so that rows with the most recent years have lower row numbers.
+
+```sql
+SELECT
+  Year,
+  -- Assign the lowest numbers to the most recent years
+  ROW_NUMBER() OVER (ORDER BY Year DESC) AS Row_N
+FROM (
+  SELECT DISTINCT Year
+  FROM Summer_Medals
+) AS Years
+ORDER BY Year;
+```
