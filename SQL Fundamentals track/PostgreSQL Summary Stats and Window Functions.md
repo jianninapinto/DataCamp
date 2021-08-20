@@ -111,3 +111,27 @@ WHERE
   Gender = 'Men' AND
   Medal = 'Gold';
 ```
+
+- Having wrapped the previous query in the Weightlifting_Gold CTE, get the previous year's champion for each year.
+
+```sql
+WITH Weightlifting_Gold AS (
+  SELECT
+    -- Return each year's champions' countries
+    Year,
+    Country AS champion
+  FROM Summer_Medals
+  WHERE
+    Discipline = 'Weightlifting' AND
+    Event = '69KG' AND
+    Gender = 'Men' AND
+    Medal = 'Gold')
+
+SELECT
+  Year, Champion,
+  -- Fetch the previous year's champion
+  LAG(Champion, 1) OVER
+    (ORDER BY Year ASC) AS Last_Champion
+FROM Weightlifting_Gold
+ORDER BY Year ASC;
+```
