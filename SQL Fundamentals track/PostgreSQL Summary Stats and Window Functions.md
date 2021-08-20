@@ -90,3 +90,5 @@ SELECT
 FROM Athlete_Medals
 ORDER BY Medals DESC;
 ```
+
+Answer: The highest-earning medalist is Michael Phelps.
