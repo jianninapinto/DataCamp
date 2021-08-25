@@ -188,3 +188,5 @@ SELECT
 FROM Athletics_Gold
 ORDER BY Event ASC, Gender ASC, Year ASC;
 ```
+
+# 2. Fetching, ranking, and paging
