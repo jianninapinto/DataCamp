@@ -135,3 +135,56 @@ SELECT
 FROM Weightlifting_Gold
 ORDER BY Year ASC;
 ```
+
+**</> Reigning champions by gender**
+
+You've already fetched the previous year's champion for one event. However, if you have multiple events, genders, or other metrics as columns, you'll need to split your table into partitions to avoid having a champion from one event or gender appear as the previous champion of another event or gender.
+
+- Return the previous champions of each year's event by gender.
+
+```sql
+WITH Tennis_Gold AS (
+  SELECT DISTINCT
+    Gender, Year, Country
+  FROM Summer_Medals
+  WHERE
+    Year >= 2000 AND
+    Event = 'Javelin Throw' AND
+    Medal = 'Gold')
+
+SELECT
+  Gender, Year,
+  Country AS Champion,
+  -- Fetch the previous year's champion by gender
+LAG(Country) OVER (PARTITION BY Gender
+            ORDER BY Gender ASC) AS Last_Champion
+FROM Tennis_Gold
+ORDER BY Gender ASC, Year ASC;
+```
+
+**</> Reigning champions by gender and event **
+
+In the previous exercise, you partitioned by gender to ensure that data about one gender doesn't get mixed into data about the other gender. If you have multiple columns, however, partitioning by only one of them will still mix the results of the other columns.
+
+- Return the previous champions of each year's events by gender and event.
+
+```sql
+WITH Athletics_Gold AS (
+  SELECT DISTINCT
+    Gender, Year, Event, Country
+  FROM Summer_Medals
+  WHERE
+    Year >= 2000 AND
+    Discipline = 'Athletics' AND
+    Event IN ('100M', '10000M') AND
+    Medal = 'Gold')
+
+SELECT
+  Gender, Year, Event,
+  Country AS Champion,
+  -- Fetch the previous year's champion by gender and event
+  LAG(Country) OVER (PARTITION BY Gender, Event
+            ORDER BY Year ASC) AS Last_Champion
+FROM Athletics_Gold
+ORDER BY Event ASC, Gender ASC, Year ASC;
+```
