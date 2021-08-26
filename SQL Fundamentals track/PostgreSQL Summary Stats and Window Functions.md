@@ -190,3 +190,56 @@ ORDER BY Event ASC, Gender ASC, Year ASC;
 ```
 
 # 2. Fetching, ranking, and paging
+
+**</> Future gold medalists**
+
+Fetching functions allow you to get values from different parts of the table into one row. If you have time-ordered data, you can "peek into the future" with the LEAD fetching function. This is especially useful if you want to compare a current value to a future value.
+
+- For each year, fetch the current gold medalist and the gold medalist 3 competitions ahead of the current row.
+
+```sql
+WITH Discus_Medalists AS (
+  SELECT DISTINCT
+    Year,
+    Athlete
+  FROM Summer_Medals
+  WHERE Medal = 'Gold'
+    AND Event = 'Discus Throw'
+    AND Gender = 'Women'
+    AND Year >= 2000)
+
+SELECT
+  -- For each year, fetch the current and future medalists
+  Year,
+  Athlete,
+  LEAD(Athlete, 3) OVER (ORDER BY Year ASC) AS Future_Champion
+FROM Discus_Medalists
+ORDER BY Year ASC;
+```
+
+**</> First athlete by name**
+
+
+It's often useful to get the first or last value in a dataset to compare all other values to it. With absolute fetching functions like FIRST_VALUE, you can fetch a value at an absolute position in the table, like its beginning or end.
+
+- Return all athletes and the first athlete ordered by alphabetical order.
+
+```sql
+WITH All_Male_Medalists AS (
+  SELECT DISTINCT
+    Athlete
+  FROM Summer_Medals
+  WHERE Medal = 'Gold'
+    AND Gender = 'Men')
+
+SELECT
+  -- Fetch all athletes and the first athlete alphabetically
+  Athlete,
+  FIRST_VALUE(Athlete) OVER (
+    ORDER BY Athlete ASC
+  ) AS First_Athlete
+FROM All_Male_Medalists;
+```
+
+Answer: The first athlete is AABYE Edgar.
+
