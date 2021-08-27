@@ -318,3 +318,22 @@ SELECT
 FROM Athlete_Medals
 ORDER BY Country ASC, RANK_N ASC;
 ```
+
+**Paging events**
+
+There are exactly 666 unique events in the Summer Medals Olympics dataset. If you want to chunk them up to analyze them piece by piece, you'll need to split the events into groups of approximately equal size.
+
+- Split the distinct events into exactly 111 groups, ordered by event in alphabetical order.
+
+```sql
+WITH Events AS (
+  SELECT DISTINCT Event
+  FROM Summer_Medals)
+  
+SELECT
+  --- Split up the distinct events into 111 unique groups
+  Event,
+  NTILE(111) OVER (ORDER BY Event ASC) AS Page
+FROM Events
+ORDER BY Event ASC;
+```
