@@ -515,3 +515,52 @@ SELECT
 FROM Chinese_Medals
 ORDER BY Athlete ASC;
 ```
+
+**</> Moving average of Russian medals**
+
+- Calculate the 3-year moving average of medals earned.
+
+```sql
+WITH Russian_Medals AS (
+  SELECT
+    Year, COUNT(*) AS Medals
+  FROM Summer_Medals
+  WHERE
+    Country = 'RUS'
+    AND Medal = 'Gold'
+    AND Year >= 1980
+  GROUP BY Year)
+
+SELECT
+  Year, Medals,
+  --- Calculate the 3-year moving average of medals earned
+  AVG(Medals) OVER
+    (ORDER BY Year ASC
+     ROWS BETWEEN
+     2 PRECEDING AND CURRENT ROW) AS Medals_MA
+FROM Russian_Medals
+ORDER BY Year ASC;
+```
+
+**</> Moving total of countries' medals**
+
+- Calculate the 3-year moving sum of medals earned per country.
+
+```sql
+WITH Country_Medals AS (
+  SELECT
+    Year, Country, COUNT(*) AS Medals
+  FROM Summer_Medals
+  GROUP BY Year, Country)
+
+SELECT
+  Year, Country, Medals,
+  -- Calculate each country's 3-game moving total
+  SUM(Medals) OVER
+    (PARTITION BY Country
+     ORDER BY Year ASC
+     ROWS BETWEEN
+     2 PRECEDING AND CURRENT ROW) AS Medals_MA
+FROM Country_Medals
+ORDER BY Country ASC, Year ASC;
+```
