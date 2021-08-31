@@ -438,3 +438,26 @@ FROM Country_Medals
 ORDER BY Country ASC, Year ASC;
 ```
 
+**</> Minimum country medals by year**
+
+So far, you've seen MAX and SUM, aggregate functions normally used with GROUP BY, being used as window functions. You can also use the other aggregate functions, like MIN, as window functions.
+
+- Return the year, medals earned, and minimum medals earned so far.
+
+```sql
+WITH France_Medals AS (
+  SELECT
+    Year, COUNT(*) AS Medals
+  FROM Summer_Medals
+  WHERE
+    Country = 'FRA'
+    AND Medal = 'Gold' AND Year >= 2000
+  GROUP BY Year)
+
+SELECT
+  Year,
+  Medals,
+  MIN(Medals) OVER (ORDER BY Year ASC) AS Min_Medals
+FROM France_Medals
+ORDER BY Year ASC;
+```
