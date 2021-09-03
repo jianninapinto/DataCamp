@@ -718,3 +718,28 @@ WHERE
 GROUP BY Country, ROLLUP(Gender)
 ORDER BY Country ASC, Gender ASC;
 ```
+
+**</> All group-level subtotals**
+
+You want to break down all medals awarded to Russia in the 2012 Olympic games per gender and medal type. Since the medals all belong to one country, Russia, it makes sense to generate all possible subtotals (Gender- and Medal-level subtotals), as well as a grand total.
+
+Generate a breakdown of the medals awarded to Russia per country and medal type, including all group-level subtotals and a grand total.
+
+- Count the medals awarded per gender and medal type.
+- Generate all possible group-level counts (per gender and medal type subtotals and the grand total).
+
+```sql
+-- Count the medals per gender and medal type
+SELECT
+  Gender,
+  Medal,
+  Count(*) AS Awards
+FROM Summer_Medals
+WHERE
+  Year = 2012
+  AND Country = 'RUS'
+-- Get all possible group-level subtotals
+GROUP BY CUBE(Gender, Medal)
+ORDER BY Gender ASC, Medal ASC;
+```
+
