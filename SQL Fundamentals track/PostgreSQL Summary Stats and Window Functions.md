@@ -565,7 +565,8 @@ FROM Country_Medals
 ORDER BY Country ASC, Year ASC;
 ```
 
-A basic pivot
+**</> A basic pivot**
+
 You have the following table of Pole Vault gold medalist countries by gender in 2008 and 2012.
 
 | Gender | Year | Country |
@@ -574,6 +575,7 @@ You have the following table of Pole Vault gold medalist countries by gender in 
 | Men    | 2012 | FRA     |
 | Women  | 2008 | RUS     |
 | Women  | 2012 | USA     |
+
 Pivot it by Year to get the following reshaped, cleaner table.
 
 | Gender | 2008 | 2012 |
@@ -603,4 +605,58 @@ $$) AS ct (Gender VARCHAR,
            "2012" VARCHAR)
 
 ORDER BY Gender ASC;
+```
+
+**</>Pivoting with ranking**
+
+You want to produce an easy scannable table of the rankings of the three most populous EU countries by how many gold medals they've earned in the 2004 through 2012 Olympic games. The table needs to be in this format:
+
+| Country | 2004 | 2008 | 2012 |
+|---------|------|------|------|
+| FRA     | ...  | ...  | ...  |
+| GBR     | ...  | ...  | ...  |
+| GER     | ...  | ...  | ...  |
+
+You'll need to count the gold medals each country has earned, produce the ranks of each country by medals earned, then pivot the table to this shape.
+
+- Count the gold medals that France (FRA), the UK (GBR), and Germany (GER) have earned per country and year.
+
+```sql
+-- Count the gold medals per country and year
+SELECT
+  Country,
+  Year,
+  COUNT(*) AS Awards
+FROM Summer_Medals
+WHERE
+  Country IN ('FRA', 'GBR', 'GER')
+  AND Year IN (2004, 2008, 2012)
+  AND Medal = 'Gold'
+GROUP BY Country, Year
+ORDER BY Country ASC, Year ASC;
+```
+
+- Select the country and year columns, then rank the three countries by how many gold medals they earned per year.
+
+```sql
+WITH Country_Awards AS (
+  SELECT
+    Country,
+    Year,
+    COUNT(*) AS Awards
+  FROM Summer_Medals
+  WHERE
+    Country IN ('FRA', 'GBR', 'GER')
+    AND Year IN (2004, 2008, 2012)
+    AND Medal = 'Gold'
+  GROUP BY Country, Year)
+
+SELECT
+  -- Select Country and Year
+  Country,
+  Year,
+  -- Rank by gold medals earned per year
+  RANK() OVER(PARTITION BY Year ORDER BY Awards DESC) :: INTEGER AS rank
+FROM Country_Awards
+ORDER BY Country ASC, Year ASC;
 ```
