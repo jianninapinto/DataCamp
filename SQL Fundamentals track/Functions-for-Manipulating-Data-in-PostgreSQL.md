@@ -22,3 +22,21 @@
  FROM INFORMATION_SCHEMA.COLUMNS 
  WHERE table_name = 'actor';
 ```
+
+**</> Determining data types**
+
+Using the techniques you learned in the lesson, let's explore the customer table of our DVD Rental database.
+
+- Select the column name and data type from the INFORMATION_SCHEMA.COLUMNS system database.
+- Limit results to only include the customer table.
+
+```sql
+-- Get the column name and data type
+SELECT
+ 	column_name, 
+    data_type
+-- From the system database information schema
+FROM INFORMATION_SCHEMA.COLUMNS 
+-- For the customer table
+WHERE table_name = 'customer';
+```
