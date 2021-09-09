@@ -99,3 +99,16 @@ FROM film
 -- Use the array index of the special_features column
 WHERE special_features[2] = 'Deleted Scenes';
 ```
+
+**</> Searching an ARRAY with ANY**
+
+- Match 'Trailers' in any index of the special_features ARRAY regardless of position.
+
+```sql
+SELECT
+  title, 
+  special_features 
+FROM film 
+-- Modify the query to use the ANY function 
+WHERE 'Trailers' = ANY (special_features);
+```
