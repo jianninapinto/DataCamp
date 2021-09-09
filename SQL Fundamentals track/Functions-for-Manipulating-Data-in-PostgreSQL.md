@@ -125,3 +125,7 @@ FROM film
 -- Filter where special_features contains 'Deleted Scenes'
 WHERE special_features @> ARRAY['Deleted Scenes'];
 ```
+
+
+# 2. Working with DATE/TIME Functions and Operators
+
