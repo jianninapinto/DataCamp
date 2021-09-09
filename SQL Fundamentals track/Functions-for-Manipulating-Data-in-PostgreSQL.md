@@ -60,5 +60,42 @@ SELECT
 FROM rental;
 ```
 
+**</> Accessing data in an ARRAY**
 
+In our DVD Rentals database, the film table contains an ARRAY for special_features which has a type of TEXT[]. Much like any ARRAY data type in PostgreSQL, a TEXT[] array can store an array of TEXT values. This comes in handy when you want to store things like phone numbers or email addresses as we saw in the lesson.
 
+Let's take a look at the special_features column and also practice accessing data in the ARRAY.
+
+1. Select the title and special features from the film table and compare the results between the two columns.
+
+```sql
+-- Select the title and special features column 
+SELECT 
+  title, 
+  special_features 
+FROM film;
+```
+
+2. Select all films that have a special feature Trailers by filtering on the first index of the special_features ARRAY.
+
+```sql
+-- Select the title and special features column 
+SELECT 
+  title, 
+  special_features 
+FROM film
+-- Use the array index of the special_features column
+WHERE special_features[1] = 'Trailers';
+```
+
+3. Now let's select all films that have Deleted Scenes in the second index of the special_features ARRAY.
+
+```sql
+-- Select the title and special features column 
+SELECT 
+  title, 
+  special_features 
+FROM film
+-- Use the array index of the special_features column
+WHERE special_features[2] = 'Deleted Scenes';
+```
