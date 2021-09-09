@@ -112,3 +112,16 @@ FROM film
 -- Modify the query to use the ANY function 
 WHERE 'Trailers' = ANY (special_features);
 ```
+
+**</> Searching an ARRAY with @>**
+
+- Use the contains operator to match the text Deleted Scenes in the special_features column.
+
+```sql
+SELECT 
+  title, 
+  special_features 
+FROM film 
+-- Filter where special_features contains 'Deleted Scenes'
+WHERE special_features @> ARRAY['Deleted Scenes'];
+```
