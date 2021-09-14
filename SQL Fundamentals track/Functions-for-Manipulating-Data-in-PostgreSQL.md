@@ -178,3 +178,66 @@ FROM film AS f
 WHERE r.return_date IS NOT NULL
 ORDER BY f.title;
 ```
+
+**</> Calculating the expected return date**
+
+Calculate the actual expected return date of a specific rental. As you've seen in previous exercises, the rental_duration is the number of days allowed for a rental before it's considered late. To calculate the expected_return_date you will want to use the rental_duration and add it to the rental_date.
+
+- Convert rental_duration by multiplying it with a 1-day INTERVAL.
+- Add it to the rental date.
+
+```sql
+SELECT
+    f.title,
+	r.rental_date,
+    f.rental_duration,
+    -- Add the rental duration to the rental date
+    INTERVAL '1' day * f.rental_duration + r.rental_date AS expected_return_date,
+    r.return_date
+FROM film AS f
+    INNER JOIN inventory AS i ON f.film_id = i.film_id
+    INNER JOIN rental AS r ON i.inventory_id = r.inventory_id
+ORDER BY f.title;
+```
+
+**</> Current timestamp functions**
+
+Use the console to explore the NOW(), CURRENT_TIMESTAMP, CURRENT_DATE and CURRENT_TIME functions and their outputs to determine which of the following is NOT correct?
+
+CURRENT_TIMESTAMP returns the current timestamp without timezone. (CURRENT_TIMESTAMP is analogous with NOW() and returns a timestamp with timezone by default.)
+
+**</> Working with the current date and time**
+
+As you learned in the video, NOW() and CURRENT_TIMESTAMP can be used interchangeably.
+
+1. Use NOW() to select the current timestamp with timezone.
+
+```sql
+-- Select the current timestamp
+SELECT NOW();
+```
+
+2. Select the current date without any time value.
+
+```sql
+-- Select the current date
+SELECT CURRENT_DATE;
+```
+
+3. Now, let's use the CAST() function to eliminate the timezone from the current timestamp.
+
+```sql
+--Select the current timestamp without a timezone
+SELECT CAST( NOW() AS timestamp)
+```
+
+4. Finally, let's select the current date.
+- Use CAST() to retrieve the same result from the NOW() function.
+
+```sql
+SELECT 
+	-- Select the current date
+	CURRENT_DATE,
+    -- CAST the result of the NOW() function to a date
+    CAST( NOW() AS date )
+```
