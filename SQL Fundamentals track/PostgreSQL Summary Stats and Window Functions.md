@@ -943,3 +943,5 @@ WHERE
   r.rental_date BETWEEN CAST('2005-05-01' AS DATE) 
   AND CAST('2005-05-01' AS DATE) + INTERVAL '90 day';
 ```
+
+# 3. Parsing and Manipulating Text
