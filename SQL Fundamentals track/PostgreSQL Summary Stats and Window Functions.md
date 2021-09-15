@@ -825,7 +825,7 @@ FROM Country_Ranks
 WHERE Rank <=3;
 ```
 
-**Using EXTRACT**
+**</> Using EXTRACT**
 
 You can use EXTRACT() and DATE_PART() to easily create new fields in your queries by extracting sub-fields from a source timestamp field.
 
