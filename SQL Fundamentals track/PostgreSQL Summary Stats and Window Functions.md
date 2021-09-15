@@ -855,3 +855,40 @@ FROM rental
 GROUP BY 1;
 ```
 
+**</> Using DATE_TRUNC**
+
+Let's experiment with different precisions and ultimately modify the queries from the previous exercises to aggregate rental activity.
+
+1. Truncate the rental_date field by year.
+
+```sql
+-- Truncate rental_date by year
+SELECT DATE_TRUNC('year', rental_date) AS rental_year
+FROM rental;
+```
+2. Now modify the previous query to truncate the rental_date by month.
+
+```sql
+-- Truncate rental_date by month
+SELECT DATE_TRUNC('month', rental_date) AS rental_month
+FROM rental;
+```
+
+3. Let's see what happens when we truncate by day of the month.
+
+```sql
+-- Truncate rental_date by day of the month 
+SELECT DATE_TRUNC('day', rental_date) AS rental_day 
+FROM rental;
+```
+
+4. Finally, count the total number of rentals by rental_day and alias it as rentals.
+
+```sql
+SELECT 
+  DATE_TRUNC('day', rental_date) AS rental_day,
+  -- Count total number of rentals 
+  COUNT(rental_id) AS rentals 
+FROM rental
+GROUP BY 1;
+```
