@@ -471,3 +471,32 @@ SELECT
   CHAR_LENGTH(description) AS desc_len
 FROM film;
 ```
+
+**</> Truncating strings**
+
+In the previous exercise, you calculated the length of the description column and noticed that the number of characters varied but most of the results were over 75 characters. There will be many times when you need to truncate a text column to a certain length to meet specific criteria for an application. In this exercise, we will practice getting the first 50 characters of the description column.
+
+- Select the first 50 characters of the description column with the alias short_desc
+
+```sql
+SELECT 
+  -- Select the first 50 characters of description
+  LEFT(description, 50) AS short_desc
+FROM 
+  film AS f; 
+```
+
+**</> Extracting substrings from text data**
+
+In this exercise, you are going to practice how to extract substrings from text columns. The Sakila database contains the address table which stores the street address for all the rental store locations. You need a list of all the street names where the stores are located but the address column also contains the street number. You'll use several functions that you've learned about in the video to manipulate the address column and return only the street address.
+
+- Extract only the street address without the street number from the address column.
+- Use functions to determine the starting and ending position parameters.
+
+```sql
+SELECT 
+  -- Select only the street name from the address table
+  SUBSTRING(address FROM position(' ' IN address)+1 FOR CHAR_LENGTH(address))
+FROM 
+  address;
+```
