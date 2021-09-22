@@ -698,3 +698,20 @@ SELECT typname
 FROM pg_type
 WHERE typname='compass_position';
 ```
+
+**</> Getting info about user-defined data types**
+
+The Sakila database has a user-defined enum data type called mpaa_rating. The rating column in the film table is an mpaa_rating type and contains the familiar rating for that film like PG or R. This is a great example of when an enumerated data type comes in handy. Film ratings have a limited number of standard values that rarely change.
+
+When you want to learn about a column or data type in your database the best place to start is the INFORMATION_SCHEMA. You can find information about the rating column that can help you learn about the type of data you can expect to find. For enum data types, you can also find the specific values that are valid for a particular enum by looking in the pg_enum system table. Let's dive into the exercises and learn more.
+
+- Select the column_name, data_type, udt_name.
+- Filter for the rating column in the film table.
+
+```sql
+-- Select the column name, data type and udt name columns
+SELECT column_name, data_type, udt_name
+FROM INFORMATION_SCHEMA.COLUMNS 
+-- Filter by the rating column in the film table
+WHERE table_name ='film' AND column_name='rating';
+```
