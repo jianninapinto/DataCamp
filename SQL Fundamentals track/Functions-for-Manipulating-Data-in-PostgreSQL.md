@@ -603,3 +603,36 @@ FROM
   	ON fc.category_id = c.category_id;
 ```
 
+# 4. Full-text Search and PostgresSQL Extensions
+
+**</> A review of the LIKE operator**
+
+Let's explore how different usage of the % wildcard will return different results by looking at the film table of the Sakila DVD Rental database.
+
+1. Select all columns for all records that begin with the word GOLD.
+
+```sql
+-- Select all columns
+SELECT *
+FROM film
+-- Select only records that begin with the word 'GOLD'
+WHERE title LIKE 'GOLD%';
+```
+
+2. Now select all records that end with the word GOLD.
+
+```sql
+SELECT *
+FROM film
+-- Select only records that end with the word 'GOLD'
+WHERE title LIKE '%GOLD';
+```
+
+3. Finally, select all records that contain the word 'GOLD'.
+
+```sql
+SELECT *
+FROM film
+-- Select only records that contain the word 'GOLD'
+WHERE title LIKE '%GOLD%';
+```
