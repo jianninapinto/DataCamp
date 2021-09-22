@@ -636,3 +636,30 @@ FROM film
 -- Select only records that contain the word 'GOLD'
 WHERE title LIKE '%GOLD%';
 ```
+
+**</> What is a tsvector?**
+
+In this example, you will convert a text column from the film table to a tsvector and inspect the results. Understanding how full-text search works is the first step in more advanced machine learning and data science concepts like natural language processing.
+
+- Select the film description and convert it to a tsvector data type.
+
+```sql
+-- Select the film description as a tsvector
+SELECT to_tsvector(description)
+FROM film;
+```
+
+**</> Basic full-text search**
+
+In this exercise, you will practice searching a text column and match it against a string. The search will return the same result as a query that uses the LIKE operator with the % wildcard at the beginning and end of the string, but will perform much better and provide you with a foundation for more advanced full-text search queries. Let's dive in.
+
+- Select the title and description columns from the film table.
+- Perform a full-text search on the title column for the word elf.
+
+```sql
+-- Select the title and description
+SELECT title, description
+FROM film
+-- Convert the title to a tsvector and match it against the tsquery 
+WHERE to_tsvector(title) @@ to_tsquery('elf');
+```
