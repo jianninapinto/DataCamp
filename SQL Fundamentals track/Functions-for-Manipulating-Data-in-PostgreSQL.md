@@ -715,3 +715,43 @@ FROM INFORMATION_SCHEMA.COLUMNS
 -- Filter by the rating column in the film table
 WHERE table_name ='film' AND column_name='rating';
 ```
+
+- Select all columns from the pg_type table where the type name is equal to mpaa_rating.
+
+```sql
+SELECT *
+FROM pg_type 
+WHERE typname='mpaa_rating'
+```
+
+**</> User-defined functions in Sakila**
+
+If you were running a real-life DVD Rental store, there are many questions that you may need to answer repeatedly like whether a film is in stock at a particular store or the outstanding balance for a particular customer. These types of scenarios are where user-defined functions will come in very handy. The Sakila database has several user-defined functions pre-defined. These functions are available out-of-the-box and can be used in your queries like many of the built-in functions we've learned about in this course.
+
+In this exercise, you will build a query step-by-step that can be used to produce a report to determine which film title is currently held by which customer using the inventory_held_by_customer() function.
+
+- Select the title and inventory_id columns from the film and inventory tables in the database.
+
+```sql
+-- Select the film title and inventory ids
+SELECT 
+	f.title, 
+    i.inventory_id
+FROM film AS f 
+	-- Join the film table to the inventory table
+	INNER JOIN inventory AS i ON f.film_id=i.film_id; 
+```
+
+- inventory_id is currently held by a customer and alias the column as held_by_cust
+
+```sql
+-- Select the film title, rental and inventory ids
+SELECT 
+	f.title, 
+    i.inventory_id,
+    -- Determine whether the inventory is held by a customer
+    inventory_held_by_customer(i.inventory_id) AS held_by_cust 
+FROM film as f 
+	-- Join the film table to the inventory table
+	INNER JOIN inventory AS i ON f.film_id=i.film_id; 
+```
