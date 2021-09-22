@@ -663,3 +663,38 @@ FROM film
 -- Convert the title to a tsvector and match it against the tsquery 
 WHERE to_tsvector(title) @@ to_tsquery('elf');
 ```
+
+**</> User-defined data types**
+
+In this exercise, you are going to create a new ENUM data type called compass_position.
+
+- Create a new enumerated data type called compass_position.
+- Use the four positions of a compass as the values.
+
+```sql
+-- Create an enumerated data type, compass_position
+CREATE TYPE compass_position AS ENUM (
+  	-- Use the four cardinal directions
+  	'north', 
+  	'south',
+  	'east', 
+  	'west'
+);
+```
+
+- Verify that the new data type has been created by looking in the pg_type system table.
+
+```sql
+-- Create an enumerated data type, compass_position
+CREATE TYPE compass_position AS ENUM (
+  	-- Use the four cardinal directions
+  	'North', 
+  	'South',
+  	'East', 
+  	'West'
+);
+-- Confirm the new data type is in the pg_type system table
+SELECT typname
+FROM pg_type
+WHERE typname='compass_position';
+```
