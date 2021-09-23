@@ -771,3 +771,15 @@ WHERE
 	-- Only include results where the held_by_cust is not null
     inventory_held_by_customer(i.inventory_id) IS NOT NULL
 ```
+
+**</> Enabling extensions**
+
+Before you can use the capabilities of an extension it must be enabled. As you have previously learned, most PostgreSQL distributions come pre-bundled with many useful extensions to help extend the native features of your database. You will be working with fuzzystrmatch and pg_trgm in upcoming exercises but before you can practice using the capabilities of these extensions you will need to first make sure they are enabled in our database. In this exercise you will enable the pg_trgm extension and confirm that the fuzzystrmatch extension, which was enabled in the video, is still enabled by querying the pg_extension system table.
+
+- Enable the pg_trgm extension
+
+```sql
+-- Enable the pg_trgm extension
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+```
+
