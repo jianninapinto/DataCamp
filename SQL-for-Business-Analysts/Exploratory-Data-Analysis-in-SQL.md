@@ -88,3 +88,45 @@ b. tag_type.tag contains NULL values
 d. tag_type.tag does not contain all the values in stackoverflow.tag
 
 Why: Foreign keys must reference a column with unique values for each row so the referenced row can be identified.
+
+
+</> Read an entity relationship diagram
+
+The information you need is sometimes split across multiple tables in the database.
+
+What is the most common stackoverflow tag_type? What companies have a tag of that type?
+
+To generate a list of such companies, you'll need to join three tables together.
+
+- First, using the tag_type table, count the number of tags with each type.
+- Order the results to find the most common tag type.
+
+```sql
+-- Count the number of tags with each type
+SELECT type, COUNT(tag) AS count
+  FROM tag_type
+ -- To get the count for each type, what do you need to do?
+ GROUP BY type
+ -- Order the results with the most common
+ -- tag types listed first
+ ORDER BY count DESC;
+```
+
+Answer: The most common stackoverflow tag_type is cloud.
+
+- Join the tag_company, company, and tag_type tables, keeping only mutually occurring records.
+- Select company.name, tag_type.tag, and tag_type.type for tags with the most common type from the previous step.
+
+```sql
+-- Select the 3 columns desired
+SELECT company.name, tag_type.tag, tag_type.type
+  FROM company
+  	   -- Join to the tag_company table
+       INNER JOIN tag_company 
+       ON company.id = tag_company.company_id
+       -- Join to the tag_type table
+       INNER JOIN tag_type
+       ON tag_company.tag = tag_type.tag
+  -- Filter to most common type
+  WHERE type='cloud';
+```
