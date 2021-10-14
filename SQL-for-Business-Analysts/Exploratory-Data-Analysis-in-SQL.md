@@ -79,12 +79,12 @@ Using what you know about foreign keys, why can't the tag column in the tag_type
 
 Possible Answers
 
-stackoverflow.tag is not a primary key
+a. stackoverflow.tag is not a primary key
 
-tag_type.tag contains NULL values
+b. tag_type.tag contains NULL values
 
-`stackoverflow.tag contains duplicate values`
+`c. stackoverflow.tag contains duplicate values`
 
-tag_type.tag does not contain all the values in stackoverflow.tag
+d. tag_type.tag does not contain all the values in stackoverflow.tag
 
-Answer: Foreign keys must reference a column with unique values for each row so the referenced row can be identified.
+Why: Foreign keys must reference a column with unique values for each row so the referenced row can be identified.
