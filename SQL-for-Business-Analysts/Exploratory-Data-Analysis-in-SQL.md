@@ -130,3 +130,28 @@ SELECT company.name, tag_type.tag, tag_type.type
   -- Filter to most common type
   WHERE type='cloud';
 ```
+
+**</> Coalesce**
+
+In the fortune500 data, industry contains some missing values. Use coalesce() to use the value of sector as the industry when industry is NULL. Then find the most common industry.
+
+- Use coalesce() to select the first non-NULL value from industry, sector, or 'Unknown' as a fallback value.
+- Alias the result of the call to coalesce() as industry2.
+- Count the number of rows with each industry2 value.
+- Find the most common value of industry2.
+
+```sql
+-- Use coalesce
+SELECT coalesce(industry, sector, 'Unknown') AS industry2,
+       -- Don't forget to count!
+       COUNT(*) 
+  FROM fortune500 
+-- Group by what? (What are you counting by?)
+ GROUP BY industry2
+-- Order results to see most common first
+ ORDER BY COUNT(*) DESC
+-- Limit results to get just the one value you want
+ LIMIT 1;
+```
+
+Answer: Utilities: Gas and Electric	22
