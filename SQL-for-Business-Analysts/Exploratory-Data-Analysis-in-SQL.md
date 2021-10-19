@@ -1,6 +1,6 @@
 # 1 What's in the database?
 
-</> Count missing values
+**</> Count missing values**
 
 Which column of fortune500 has the most missing values? To find out, you'll need to check each column individually, although here we'll check just three.
 
@@ -48,7 +48,7 @@ FROM fortune500;
 
 Answer: We have 13 missing values on the industry column. 
 
-</> Join tables
+**</> Join tables**
 
 - Look at the contents of the company and fortune500 tables. Find a column that they have in common where the values for each company are the same in both tables.
 - Join the company and fortune500 tables with an INNER JOIN.
@@ -73,7 +73,7 @@ PayPal Holdings Incorporated
 eBay, Inc.
 Adobe Systems Incorporated`
 
-</> Foreign keys
+**</> Foreign keys**
 
 Using what you know about foreign keys, why can't the tag column in the tag_type table be a foreign key that references the tag column in the stackoverflow table?
 
@@ -90,7 +90,7 @@ d. tag_type.tag does not contain all the values in stackoverflow.tag
 Why: Foreign keys must reference a column with unique values for each row so the referenced row can be identified.
 
 
-</> Read an entity relationship diagram
+**</> Read an entity relationship diagram**
 
 The information you need is sometimes split across multiple tables in the database.
 
@@ -187,3 +187,33 @@ SELECT company_original.name, title, rank
  -- For clarity, order by rank
  ORDER BY rank; 
 ```
+
+**</> Effects of casting**
+
+When you cast data from one type to another, information can be lost or changed. See how the casting changes values and practice casting data using the CAST() function and the :: syntax.
+
+`SELECT CAST(value AS new_type);
+
+SELECT value::new_type;`
+
+1. - Select profits_change and profits_change cast as integer from fortune500.
+   - Look at how the values were converted.
+   
+```-- Select the original value
+SELECT profits_change, 
+	   -- Cast profits_change
+       CAST(profits_change AS integer) AS profits_change_int
+  FROM fortune500;
+  ```
+  
+
+2. - Compare the results of casting of dividing the integer value 10 by 3 to the result of dividing the numeric value 10 by 3.
+
+```sql
+-- Divide 10 by 3
+SELECT 10/3, 
+       -- Cast 10 as numeric and divide by 3
+       10::numeric/3;
+```
+
+Answer> 3	3.3333333333333333
