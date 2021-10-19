@@ -216,4 +216,17 @@ SELECT 10/3,
        10::numeric/3;
 ```
 
-Answer> 3	3.3333333333333333
+Answer:
+3 | 3.3333333333333333
+
+3. - Now cast numbers that appear as text as numeric.
+   - Note: 1e3 is scientific notation.
+
+```sql
+SELECT '3.2'::numeric,
+       '-123'::numeric,
+       '1e3'::numeric,
+       '1e-3'::numeric,
+       '02314'::numeric,
+       '0002'::numeric;
+```
