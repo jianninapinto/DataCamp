@@ -411,4 +411,64 @@ SELECT trunc(employees, -4) AS employee_bin,
  ORDER BY employee_bin;
 ```
 
+**</> Generate series**
 
+Summarize the distribution of the number of questions with the tag "dropbox" on Stack Overflow per day by binning the data.
+
+- Start by selecting the minimum and maximum of the question_count column for the tag 'dropbox' so you know the range of values to cover with the bins.
+
+```sql
+-- Select the min and max of question_count
+SELECT min(question_count), 
+       max(question_count)
+  -- From what table?
+  FROM stackoverflow
+ -- For tag dropbox
+ WHERE tag = 'dropbox';
+```
+
+Answer: min = 2315 max = 3072
+
+- Next, use generate_series() to create bins of size 50 from 2200 to 3100.
+
+	- To do this, you need an upper and lower bound to define a bin.
+
+	- This will require you to modify the stopping value of the lower bound and the starting value of the upper bound by the bin width.
+
+```sql
+-- Create lower and upper bounds of bins
+SELECT generate_series(2200, 3050, 50) AS lower,
+       generate_series(2250, 3100, 50) AS upper;
+```
+
+- Select lower and upper from bins, along with the count of values within each bin bounds.
+
+	- To do this, you'll need to join 'dropbox', which contains the question_count for tag "dropbox", to the bins created by generate_series().
+
+	- The join should occur where the count is greater than or equal to the lower bound, and strictly less than the upper bound.
+
+```sql
+-- Bins created in Step 2
+WITH bins AS (
+      SELECT generate_series(2200, 3050, 50) AS lower,
+             generate_series(2250, 3100, 50) AS upper),
+     -- Subset stackoverflow to just tag dropbox (Step 1)
+     dropbox AS (
+      SELECT question_count 
+        FROM stackoverflow
+       WHERE tag='dropbox') 
+-- Select columns for result
+-- What column are you counting to summarize?
+SELECT lower, upper, count(question_count) 
+  FROM bins  -- Created above
+       -- Join to dropbox (created above), 
+       -- keeping all rows from the bins table in the join
+       LEFT JOIN dropbox
+       -- Compare question_count to lower and upper
+         ON question_count >= lower 
+        AND question_count < upper
+ -- Group by lower and upper to count values in each bin
+ GROUP BY lower, upper
+ -- Order by lower to put bins in order
+ ORDER BY lower;
+```
