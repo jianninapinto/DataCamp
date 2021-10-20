@@ -271,5 +271,77 @@ SELECT count(*)
 Answer: 298
 
 
-			
 
+# 2. Summarizing and aggregating numeric data
+
+**</> Division**
+
+Compute the average revenue per employee for Fortune 500 companies by sector.
+
+- Compute revenue per employee by dividing revenues by employees; use casting to produce a numeric result.
+- Take the average of revenue per employee with avg(); alias this as avg_rev_employee.
+- Group by sector.
+- Order by the average revenue per employee.
+
+```sql
+-- Select average revenue per employee by sector
+SELECT sector, 
+       AVG(revenues/employees::numeric) AS avg_rev_employee
+  FROM fortune500
+ GROUP BY sector
+ -- Use the column alias to order the results
+ ORDER BY avg_rev_employee;
+```
+
+**</> Explore with division**
+
+In exploring a new database, it can be unclear what the data means and how columns are related to each other.
+
+What information does the unanswered_pct column in the stackoverflow table contain? Is it the percent of questions with the tag that are unanswered (unanswered ?s with tag/all ?s with tag)? Or is it something else, such as the percent of all unanswered questions on the site with the tag (unanswered ?s with tag/all unanswered ?s)?
+
+Divide unanswered_count (unanswered ?s with tag) by question_count (all ?s with tag) to see if the value matches that of unanswered_pct to determine the answer.
+
+- Exclude rows where question_count is 0 to avoid a divide by zero error.
+- Limit the result to 10 rows.
+
+```sql-- Divide unanswered_count by question_count
+SELECT unanswered_count/question_count::numeric AS computed_pct, 
+       -- What are you comparing the above quantity to?
+       unanswered_pct
+  FROM stackoverflow
+ -- Select rows where question_count is not 0
+ WHERE question_count > 0
+ LIMIT 10;
+```
+
+**</> Summarize numeric columns**
+
+Summarize the profit column in the fortune500 table using the functions you've learned.
+
+1. Compute the min(), avg(), max(), and stddev() of profits.
+
+```sql
+-- Select min, avg, max, and stddev of fortune500 profits
+SELECT min(profits),
+       avg(profits),
+       max(profits),
+       stddev(profits)
+  FROM fortune500;
+```
+
+2. - Now repeat step 1, but summarize profits by sector.
+   - Order the results by the average profits for each sector
+
+```sql
+-- Select sector and summary measures of fortune500 profits
+SELECT sector,
+       min(profits),
+       avg(profits),
+       max(profits),
+       stddev(profits)
+  FROM fortune500
+ -- What to group by?
+ GROUP BY sector
+ -- Order by the average profits
+ ORDER BY avg;
+```
