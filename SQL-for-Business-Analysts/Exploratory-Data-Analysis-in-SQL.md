@@ -376,4 +376,39 @@ SELECT stddev(maxval),
 
 Note: A subquery was necessary here because the tag maximums must be computed before you can summarize them.
 
+Truncate
+Use trunc() to examine the distributions of attributes of the Fortune 500 companies.
+
+1. - Use trunc() to truncate employees to the 100,000s (5 zeros).
+   - Count the number of observations with each truncated value.
+
+```sql
+-- Truncate employees
+SELECT trunc(employees, -5) AS employee_bin,
+       -- Count number of companies with each truncated value
+       Count(*)
+  FROM fortune500
+ -- Use alias to group
+ GROUP BY employee_bin
+ -- Use alias to order
+ ORDER BY employee_bin;
+```
+
+2. - Repeat step 1 for companies with < 100,000 employees (most common).
+   - This time, truncate employees to the 10,000s place.
+
+```sql
+-- Truncate employees
+SELECT trunc(employees, -4) AS employee_bin,
+       -- Count number of companies with each truncated value
+       COUNT(*)
+  FROM fortune500
+ -- Limit to which companies?
+ WHERE employees < 100000
+ -- Use alias to group
+ GROUP BY employee_bin
+ -- Use alias to order
+ ORDER BY employee_bin;
+```
+
 
