@@ -498,3 +498,34 @@ Answer: Profits, assets and equity are positively correlated with revenue for Fo
 	rev_equity: 0.546570999718431
 	
 
+**</> Mean and Median**
+
+Compute the mean (avg()) and median assets of Fortune 500 companies by sector.
+
+Use the percentile_disc() function to compute the median:
+
+`
+percentile_disc(0.5) 
+WITHIN GROUP (ORDER BY column_name)
+`
+
+- Select the mean and median of assets.
+- Group by sector.
+- Order the results by the mean.
+
+```sql
+-- What groups are you computing statistics by?
+SELECT sector,
+       -- Select the mean of assets with the avg function
+       avg(assets) AS mean,
+       -- Select the median
+       percentile_disc(0.5) WITHIN GROUP (ORDER BY assets) AS median
+  FROM fortune500
+ -- Computing statistics for each what?
+ GROUP BY sector
+ -- Order results by a value of interest
+ ORDER BY mean;
+```
+
+Answer: The mean and median can differ significantly for skewed distributions that have a few extreme values.
+
