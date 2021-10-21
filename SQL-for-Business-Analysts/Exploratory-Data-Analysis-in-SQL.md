@@ -472,3 +472,28 @@ SELECT lower, upper, count(question_count)
  -- Order by lower to put bins in order
  ORDER BY lower;
 ```
+
+**</> Correlation**
+
+What's the relationship between a company's revenue and its other financial attributes? Compute the correlation between revenues and other financial variables with the corr() function.
+
+- Compute the correlation between revenues and profits.
+- Compute the correlation between revenues and assets.
+- Compute the correlation between revenues and equity.
+
+```sql
+-- Correlation between revenues and profit
+SELECT corr(revenues, profits) AS rev_profits,
+	   -- Correlation between revenues and assets
+       corr(revenues, assets) AS rev_assets,
+       -- Correlation between revenues and equity
+       corr(revenues, equity) AS rev_equity 
+  FROM fortune500;
+```
+
+Answer: Profits, assets and equity are positively correlated with revenue for Fortune 500 companies. 
+	rev_profits: 0.599993581572479	
+	rev_assets: 0.329499521318506
+	rev_equity: 0.546570999718431
+	
+
