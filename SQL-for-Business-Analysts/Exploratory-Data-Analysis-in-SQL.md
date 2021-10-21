@@ -659,3 +659,27 @@ SELECT startdates.tag,
          AND so_max.date = '2018-09-25';
 ```
 
+**</> Insert into a temp table**
+
+While you can join the results of multiple similar queries together with UNION, sometimes it's easier to break a query down into steps. You can do this by creating a temporary table and inserting rows into it.
+
+Compute the correlations between each pair of profits, profits_change, and revenues_change from the Fortune 500 data.
+
+The resulting temporary table should have the following structure:
+
+| measure         | profits | profits_change | revenues_change |
+|-----------------|---------|----------------|-----------------|
+| profits         | 1.00    | #              | #               |
+| profits_change  | #       | 1.00           | #               | 
+| revenues_change | #       | #              | 1.00            | 
+
+Recall the round() function to make the results more readable:
+
+`round(column_name::numeric, decimal_places)`
+
+Note that Steps 1 and 2 do not produce output. It is normal for the query result pane to say "Your query did not generate any results."
+
+Create a temp table correlations.
+
+- Compute the correlation between profits and each of the three variables (i.e. correlate profits with profits, profits with profits_change, etc).
+- Alias columns by the name of the variable for which the correlation with profits is being computed.
