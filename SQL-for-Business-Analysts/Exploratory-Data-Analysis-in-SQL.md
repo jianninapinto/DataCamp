@@ -492,6 +492,7 @@ SELECT corr(revenues, profits) AS rev_profits,
 ```
 
 Answer: Profits, assets and equity are positively correlated with revenue for Fortune 500 companies. 
+	
 	rev_profits: 0.599993581572479	
 	rev_assets: 0.329499521318506
 	rev_equity: 0.546570999718431
