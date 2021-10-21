@@ -592,3 +592,6 @@ SELECT title, fortune500.sector,
 -- What rows do you want to select?
  WHERE profits > pct80;
 ```
+
+Answer: Some of these companies are Walmart, Berkshire Hathaway	, Apple, Exxon Mobil, McKesson, UnitedHealth Group, CVS Health, General Motors, AT&T and AmerisourceBergen.
+
