@@ -875,7 +875,7 @@ SELECT DISTINCT(street), COUNT(*)
 -- Group and sort the results by street
     GROUP BY street
     ORDER BY COUNT(*);
-``
+```
 
 Possible Answers
 
