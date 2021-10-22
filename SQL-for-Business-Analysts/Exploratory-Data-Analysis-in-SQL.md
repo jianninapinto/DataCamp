@@ -798,3 +798,22 @@ SELECT priority, count(*)
 | NONE     | 30081 |
 | HIGH     | 88    |
 | LOW      | 517   |
+
+2. - How many distinct values of zip appear in at least 100 rows?
+
+```sql
+-- Find values of zip that appear in at least 100 rows
+-- Also get the count of each value
+SELECT DISTINCT(zip), COUNT(*)
+  FROM evanston311
+ GROUP BY zip
+  HAVING COUNT(*) > 100; 
+```
+
+| zip   | count |
+|-------|-------|
+| 60201 | 19054 |
+| 60202 | 11165 |
+| 60208 | 255   |
+| null  | 5528  |
+
