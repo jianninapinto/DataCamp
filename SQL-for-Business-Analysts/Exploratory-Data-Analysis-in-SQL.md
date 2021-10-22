@@ -772,3 +772,29 @@ SELECT measure,
 | profits         | 1.00    | 0.02           | 0.02            |
 | profits_change  | 0.02    | 1.00           | -0.09           |
 | revenues_change | 0.02    | -0.09          | 1.00            |
+
+
+
+# 3. Exploring categorical data and unstructured text
+
+**</> Count the categories**
+
+In this chapter, we'll be working mostly with the Evanston 311 data in table evanston311. This is data on help requests submitted to the city of Evanston, IL.
+
+This data has several character columns. Start by examining the most frequent values in some of these columns to get familiar with the common categories.
+
+1. - How many rows does each priority level have?
+
+```sql
+-- Select the count of each level of priority
+SELECT priority, count(*)
+  FROM evanston311
+ GROUP BY priority;
+```
+
+| priority | count |
+|----------|-------|
+| MEDIUM   | 5745  |
+| NONE     | 30081 |
+| HIGH     | 88    |
+| LOW      | 517   |
