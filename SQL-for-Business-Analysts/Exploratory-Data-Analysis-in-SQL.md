@@ -769,6 +769,6 @@ SELECT measure,
 
 | measure         | profits | profits_change | revenues_change |
 |-----------------|---------|----------------|-----------------|
-| profits         | 1.00    | #              | #               |
-| profits_change  | #       | 1.00           | #               |
-| revenues_change | #       | #              | 1.00            |
+| profits         | 1.00    | 0.02           | 0.02            |
+| profits_change  | 0.02    | 1.00           | -0.09           |
+| revenues_change | 0.02    | -0.09          | 1.00            |
