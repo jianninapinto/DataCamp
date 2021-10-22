@@ -856,3 +856,35 @@ SELECT street, COUNT(*)
 | Sherman Avenue | 1276  |
 | Central Street | 1211  |
 | Davis Street   | 1154  |
+
+
+**</> Spotting character data problems**
+
+Explore the distinct values of the street column. Select each street value and the count of the number of rows with that value. Sort the results by street to see similar values near each other.
+
+Look at the results.
+
+Which of the following is NOT an issue you see with the values of street?
+
+```sql
+-- Get the distinct values of the street column
+-- Count the number of rows with each street value
+SELECT DISTINCT(street), COUNT(*)
+-- Where are you getting the data from?
+    FROM evanston311
+-- Group and sort the results by street
+    GROUP BY street
+    ORDER BY COUNT(*);
+``
+
+Possible Answers
+
+a. The street suffix (e.g. Street, Avenue) is sometimes abbreviated
+
+`b. There are sometimes extra spaces at the beginning and end of values`
+
+c. House/street numbers sometimes appear in the column
+
+d. Capitalization is not consistent across values
+
+e. All of the above are potential problems
