@@ -836,3 +836,23 @@ HAVING COUNT(*) > 100;
 | Iframe              | 3670  |
 | gov.publicstuff.com | 30985 |
 | iOS                 | 1199  |
+
+
+4. - Select the five most common values of street and the count of each.
+
+```sql
+-- Find the 5 most common values of street and the count of each
+SELECT street, COUNT(*)
+  FROM evanston311
+ GROUP BY street
+ ORDER BY COUNT(*) DESC
+ LIMIT 5;
+```
+
+| street         | count |
+|----------------|-------|
+| null           | 1699  |
+| Chicago Avenue | 1440  |
+| Sherman Avenue | 1276  |
+| Central Street | 1211  |
+| Davis Street   | 1154  |
