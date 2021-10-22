@@ -683,3 +683,49 @@ Create a temp table correlations.
 
 - Compute the correlation between profits and each of the three variables (i.e. correlate profits with profits, profits with profits_change, etc).
 - Alias columns by the name of the variable for which the correlation with profits is being computed.
+
+```sql
+DROP TABLE IF EXISTS correlations;
+
+-- Create temp table 
+CREATE TEMP TABLE correlations AS
+-- Select each correlation
+SELECT 'profits'::varchar AS measure,
+       -- Compute correlations
+       corr(profits, profits) AS profits,
+       corr(profits, profits_change) AS profits_change,
+       corr(profits, revenues_change) AS revenues_change
+  FROM fortune500;
+```
+
+- Insert rows into the correlations table for profits_change and revenues_change.
+
+```sql
+DROP TABLE IF EXISTS correlations;
+
+CREATE TEMP TABLE correlations AS
+SELECT 'profits'::varchar AS measure,
+       corr(profits, profits) AS profits,
+       corr(profits, profits_change) AS profits_change,
+       corr(profits, revenues_change) AS revenues_change
+  FROM fortune500;
+
+-- Add a row for profits_change
+-- Insert into what table?
+INSERT INTO correlations
+-- Follow the pattern of the select statement above
+-- Using profits_change instead of profits
+SELECT 'profits_change'::varchar AS measure,
+       corr(profits_change, profits) AS profits,
+       corr(profits_change, profits_change) AS profits_change,
+       corr(profits_change, revenues_change) AS revenues_change
+  FROM fortune500;
+
+-- Repeat the above, but for revenues_change
+INSERT INTO correlations
+SELECT 'revenues_change'::varchar AS measure,
+       corr(revenues_change, profits) AS profits,
+       corr(revenues_change, profits_change) AS profits_change,
+       corr(revenues_change, revenues_change) AS revenues_change
+  FROM fortune500;
+```
