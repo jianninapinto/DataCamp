@@ -817,3 +817,22 @@ SELECT DISTINCT(zip), COUNT(*)
 | 60208 | 255   |
 | null  | 5528  |
 
+
+3. - How many distinct values of source appear in at least 100 rows?
+
+
+```sql
+-- Find values of source that appear in at least 100 rows
+-- Also get the count of each value
+SELECT DISTINCT(source), COUNT(*)
+  FROM evanston311
+ GROUP BY source
+HAVING COUNT(*) > 100;
+```
+
+| source              | count |
+|---------------------|-------|
+| Android             | 444   |
+| Iframe              | 3670  |
+| gov.publicstuff.com | 30985 |
+| iOS                 | 1199  |
