@@ -997,3 +997,34 @@ SELECT Count(*)
 |-------|
 | 570   |
 
+
+- Find the most common categories for rows with a description about trash that don't have a trash-related category.
+
+```sql
+-- Count rows with each category
+SELECT category, COUNT(*)
+  FROM evanston311 
+ WHERE (description ILIKE '%trash%'
+    OR description ILIKE '%garbage%') 
+   AND category NOT LIKE '%Trash%'
+   AND category NOT LIKE '%Garbage%'
+ -- What are you counting?
+ GROUP BY category
+ --- order by most frequent values
+ ORDER BY COUNT(*) DESC
+ LIMIT 10;
+```
+
+| category                                   | count |
+|--------------------------------------------|-------|
+| Ask A Question / Send A Message            | 273   |
+| Rodents- Rats                              | 77    |
+| Recycling - Missed Pickup                  | 28    |
+| Dead Animal on Public Property             | 16    |
+| Graffiti                                   | 15    |
+| Yard Waste - Missed Pickup                 | 14    |
+| Public Transit Agency Issue                | 13    |
+| Food Establishment - Unsanitary Conditions | 13    |
+| Exterior Conditions                        | 10    |
+| Street Sweeping                            | 9     |
+
