@@ -1028,3 +1028,28 @@ SELECT category, COUNT(*)
 | Exterior Conditions                        | 10    |
 | Street Sweeping                            | 9     |
 
+**</> Concatenate strings**
+
+House number (house_num) and street are in two separate columns in evanston311. Concatenate them together with concat() with a space in between the values.
+
+- Concatenate house_num, a space ' ', and street into a single value using the concat().
+- Use a trim function to remove any spaces from the start of the concatenated value.
+
+```sql
+-- Concatenate house_num, a space, and street
+-- and trim spaces from the start of the result
+SELECT ltrim(concat(house_num, ' ', street)) AS address
+  FROM evanston311;
+```
+
+| address               |
+|-----------------------|
+| 606-612 Sheridan Road |
+| 930 Washington St     |
+| 1183-1223 Lincoln St  |
+| 1–111 Callan Ave      |
+| 1524 Crain St         |
+| 2830 Central Street   |
+
+Showing 6 out of 36431 rows
+
