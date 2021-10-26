@@ -954,3 +954,27 @@ SELECT COUNT(*)
 | count |
 |-------|
 | 2551  |
+
+
+- category values are in title case. Use LIKE to find category values with 'Trash' or 'Garbage' in them.
+
+```sql
+-- Select categories containing Trash or Garbage
+SELECT category
+  FROM evanston311
+ -- Use LIKE
+ WHERE category LIKE '%Trash%'
+    OR category LIKE '%Garbage%';
+```
+
+| category                                              |
+|-------------------------------------------------------|
+| THIS REQUEST IS INACTIVE...Trash Cart - Compost Bin   |
+| Trash - Tire Pickup                                   |
+| Trash - Special Pickup - Resident Use                 |
+| Trash, Recycling, Yard Waste Cart- Repair/Replacement |
+| Trash, Recycling, Yard Waste Cart- Repair/Replacement |
+| Trash - Missed Garbage Pickup                         |
+| THIS REQUEST IS INACTIVE...Trash Cart - Compost Bin   |
+
+Showing 7 out of 5816 rows
