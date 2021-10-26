@@ -978,3 +978,22 @@ SELECT category
 | THIS REQUEST IS INACTIVE...Trash Cart - Compost Bin   |
 
 Showing 7 out of 5816 rows
+
+- Count rows where the description includes 'trash' or 'garbage' but the category does not.
+
+```sql
+-- Count rows
+SELECT Count(*)
+  FROM evanston311 
+ -- description contains trash or garbage (any case)
+ WHERE (description ILIKE '%trash%'
+    OR description ILIKE '%garbage%') 
+ -- category does not contain Trash or Garbage
+   AND category NOT LIKE '%Trash%'
+   AND category NOT LIKE '%Garbage%';
+```
+
+| count |
+|-------|
+| 570   |
+
