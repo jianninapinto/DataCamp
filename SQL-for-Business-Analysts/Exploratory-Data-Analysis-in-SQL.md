@@ -932,3 +932,25 @@ SELECT distinct street,
 Note: the "cleaned" values still include letters from house numbers, and trim() stripped off some numbers that belong as part of road names. It can take several tries to find the right combination of functions to clean up messy values.
 
 
+**</> Exploring unstructured text**
+
+The description column of evanston311 has the details of the inquiry, while the category column groups inquiries into different types. How well does the category capture what's in the description?
+
+LIKE and ILIKE queries will help you find relevant descriptions and categories. 
+
+Building up the query through the steps below, find inquires that mention trash or garbage in the description without trash or garbage being in the category. What are the most frequent categories for such inquiries?
+
+- Use ILIKE to count rows in evanston311 where the description contains 'trash' or 'garbage' regardless of case.
+
+```sql
+-- Count rows
+SELECT COUNT(*)
+  FROM evanston311
+ -- Where description includes trash or garbage
+ WHERE description ILIKE '%trash%' 
+    or description ILIKE '%garbage%';
+```
+
+| count |
+|-------|
+| 2551  |
