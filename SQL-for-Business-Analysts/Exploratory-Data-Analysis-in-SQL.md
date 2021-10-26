@@ -888,3 +888,47 @@ c. House/street numbers sometimes appear in the column
 d. Capitalization is not consistent across values
 
 e. All of the above are potential problems
+
+**</> Trimming**
+
+Some of the street values in evanston311 include house numbers with # or / in them. In addition, some street values end in a ..
+
+Remove the house numbers, extra punctuation, and any spaces from the beginning and end of the street values as a first attempt at cleaning up the values.
+
+- Trim digits 0-9, #, /, ., and spaces from the beginning and end of street.
+- Select distinct original street value and the corrected street value.
+- Order the results by the original street value.
+
+```sql
+SELECT distinct street,
+       -- Trim off unwanted characters from street
+       trim(street, '0123456789 #/.') AS cleaned_street
+  FROM evanston311
+ ORDER BY street;
+```
+
+| street              | cleaned_street      |
+|---------------------|---------------------|
+| 1/2 Chicago Ave     | Chicago Ave         |
+| 1047B Chicago Ave   | B Chicago Ave       |
+| 13th Street         | th Street           |
+| 141A Callan Ave     | A Callan Ave        |
+| 141b Callan Ave     | b Callan Ave        |
+| 1624B Central St    | B Central St        |
+| 217A Dodge Ave      | A Dodge Ave         |
+| 221c Dodge Ave      | c Dodge Ave         |
+| 300c Dodge Ave      | c Dodge Ave         |
+| 3314A Central St    | A Central St        |
+| 36th Street         | th Street           |
+| 600A South Blvd     | A South Blvd        |
+| 606B South Blvd     | B South Blvd        |
+| 612C South Blvd     | C South Blvd        |
+| 613B Custer Ave     | B Custer Ave        |
+| 618B South Blvd     | B South Blvd        |
+| 6th Street          | th Street           |
+| Arlington Boulevard | Arlington Boulevard |
+| Arnold Pl           | Arnold Pl           |
+
+Note: the "cleaned" values still include letters from house numbers, and trim() stripped off some numbers that belong as part of road names. It can take several tries to find the right combination of functions to clean up messy values.
+
+
