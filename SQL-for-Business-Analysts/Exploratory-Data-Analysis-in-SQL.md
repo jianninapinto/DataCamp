@@ -1169,12 +1169,13 @@ SELECT CASE WHEN zipcount < ??? THEN 'other'
 
 Result:
 
-zip_recoded    zipsum
-60201          19054
-60202          11165
-null           5528
-other          429
-60208          255
+| zip_recoded | zipsum |
+|-------------|--------|
+| 60201       | 19054  |
+| 60202       | 11165  |
+| null        | 5528   |
+| other       | 429    |
+| 60208       | 255    |
 
 **Possible Answers**
 
