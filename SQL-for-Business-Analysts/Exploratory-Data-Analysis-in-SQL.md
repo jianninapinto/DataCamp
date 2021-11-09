@@ -1222,3 +1222,32 @@ SELECT DISTINCT standardized
     OR standardized LIKE 'Snow%Removal%';
 ```
 
+- UPDATE standardized values LIKE 'Trash%Cart' to 'Trash Cart'.
+- UPDATE standardized values of 'Snow Removal/Concerns' and 'Snow/Ice/Hazard Removal' to 'Snow Removal'.
+
+```sql
+-- Code from previous step
+DROP TABLE IF EXISTS recode;
+
+CREATE TEMP TABLE recode AS
+  SELECT DISTINCT category, 
+         rtrim(split_part(category, '-', 1)) AS standardized
+    FROM evanston311;
+
+-- Update to group trash cart values
+UPDATE recode 
+   SET standardized='Trash Cart' 
+ WHERE standardized LIKE 'Trash%Cart';
+
+-- Update to group snow removal values
+UPDATE recode 
+   SET standardized='Snow Removal'
+ WHERE standardized LIKE 'Snow Removal/Concerns' OR standardized LIKE 'Snow/Ice/Hazard Removal';
+    
+-- Examine effect of updates
+SELECT DISTINCT standardized 
+  FROM recode
+ WHERE standardized LIKE 'Trash%Cart'
+    OR standardized LIKE 'Snow%Removal%';
+```
+
