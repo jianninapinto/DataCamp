@@ -1222,6 +1222,16 @@ SELECT DISTINCT standardized
     OR standardized LIKE 'Snow%Removal%';
 ```
 
+| standardized                      |
+|-----------------------------------|
+| Snow Removal                      |
+| Snow Removal/Concerns             |
+| Snow/Ice/Hazard Removal           |
+| Trash Cart                        |
+| Trash Cart, Recycling Cart        |
+| Trash, Recycling, Yard Waste Cart |
+
+
 - UPDATE standardized values LIKE 'Trash%Cart' to 'Trash Cart'.
 - UPDATE standardized values of 'Snow Removal/Concerns' and 'Snow/Ice/Hazard Removal' to 'Snow Removal'.
 
@@ -1250,4 +1260,56 @@ SELECT DISTINCT standardized
  WHERE standardized LIKE 'Trash%Cart'
     OR standardized LIKE 'Snow%Removal%';
 ```
+
+| standardized |
+|--------------|
+| Snow Removal |
+| Trash Cart   |
+
+
+- UPDATE recode by setting standardized values of 'THIS REQUEST IS INACTIVE...Trash Cart', '(DO NOT USE) Water Bill', 'DO NOT USE Trash', and 'NO LONGER IN USE' to 'UNUSED'.
+
+```sql
+-- Code from previous step
+DROP TABLE IF EXISTS recode;
+
+CREATE TEMP TABLE recode AS
+  SELECT DISTINCT category, 
+         rtrim(split_part(category, '-', 1)) AS standardized
+    FROM evanston311;
+  
+UPDATE recode SET standardized='Trash Cart' 
+ WHERE standardized LIKE 'Trash%Cart';
+
+UPDATE recode SET standardized='Snow Removal' 
+ WHERE standardized LIKE 'Snow%Removal%';
+
+-- Update to group unused/inactive values
+UPDATE recode 
+   SET standardized='UNUSED' 
+ WHERE standardized IN ('THIS REQUEST IS INACTIVE...Trash Cart', 
+               '(DO NOT USE) Water Bill',
+               'DO NOT USE Trash', 
+               'NO LONGER IN USE');
+
+-- Examine effect of updates
+SELECT DISTINCT standardized 
+  FROM recode
+ ORDER BY standardized;
+```
+
+| standardized                            |
+|-----------------------------------------|
+| ADA/Inclusion Aids                      |
+| Abandoned Bicycle on City Property      |
+| Abandoned Vehicle                       |
+| Accessibility                           |
+| Advanced Disposal                       |
+| Alarm Registration                      |
+| Alleys                                  |
+| Amplified Sounds and/or Music           |
+| Animal Issue/Concern                    |
+| Animal Service      			  |
+
+Showing 10 out of 115 rows
 
