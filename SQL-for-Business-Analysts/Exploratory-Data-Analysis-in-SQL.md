@@ -1186,3 +1186,39 @@ b. 1000
 `c. 100`
 
 d. 60201
+
+
+**</> Group and recode values**
+
+There are almost 150 distinct values of evanston311.category. But some of these categories are similar, with the form "Main Category - Details". We can get a better sense of what requests are common if we aggregate by the main category.
+
+To do this, create a temporary table recode mapping distinct category values to new, standardized values. Make the standardized values the part of the category before a dash ('-'). Extract this value with the split_part() function:
+
+`split_part(string text, delimiter text, field int)`
+
+You'll also need to do some additional cleanup of a few cases that don't fit this pattern.
+
+Then the evanston311 table can be joined to recode to group requests by the new standardized category values.
+
+- Create recode with a standardized column; use split_part() and then rtrim() to remove any remaining whitespace on the result of split_part().
+
+```sql
+-- Fill in the command below with the name of the temp table
+DROP TABLE IF EXISTS recode;
+
+-- Create and name the temporary table
+CREATE TEMP TABLE recode AS
+-- Write the select query to generate the table 
+-- with distinct values of category and standardized values
+  SELECT DISTINCT category, 
+         rtrim(split_part(category, '-', 1)) AS standardized
+    -- What table are you selecting the above values from?
+    FROM evanston311;
+    
+-- Look at a few values before the next step
+SELECT DISTINCT standardized 
+  FROM recode
+ WHERE standardized LIKE 'Trash%Cart'
+    OR standardized LIKE 'Snow%Removal%';
+```
+
