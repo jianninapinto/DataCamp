@@ -1313,3 +1313,50 @@ SELECT DISTINCT standardized
 
 Showing 10 out of 115 rows
 
+- Now, join the evanston311 and recode tables to count the number of requests with each of the standardized values
+- List the most common standardized values first.
+
+```sql
+-- Code from previous step
+DROP TABLE IF EXISTS recode;
+CREATE TEMP TABLE recode AS
+  SELECT DISTINCT category, 
+         rtrim(split_part(category, '-', 1)) AS standardized
+  FROM evanston311;
+UPDATE recode SET standardized='Trash Cart' 
+ WHERE standardized LIKE 'Trash%Cart';
+UPDATE recode SET standardized='Snow Removal' 
+ WHERE standardized LIKE 'Snow%Removal%';
+UPDATE recode SET standardized='UNUSED' 
+ WHERE standardized IN ('THIS REQUEST IS INACTIVE...Trash Cart', 
+               '(DO NOT USE) Water Bill',
+               'DO NOT USE Trash', 'NO LONGER IN USE');
+
+-- Select the recoded categories and the count of each
+SELECT standardized, COUNT(*)
+-- From the original table and table with recoded values
+  FROM evanston311 
+       LEFT JOIN recode 
+       -- What column do they have in common?
+       ON evanston311.category = recode.category 
+ -- What do you need to group by to count?
+ GROUP BY standardized
+ -- Display the most common val values first
+ ORDER BY COUNT(*) DESC;
+```
+
+| standardized                                                     | count |
+|------------------------------------------------------------------|-------|
+| Broken Parking Meter                                             | 6092  |
+| Trash                                                            | 3699  |
+| Ask A Question / Send A Message                                  | 2595  |
+| Trash Cart                                                       | 1902  |
+| Tree Evaluation                                                  | 1879  |
+| Rodents                                                          | 1305  |
+| Recycling                                                        | 1224  |
+| Dead Animal on Public Property                                   | 1057  |
+| Child Seat Installation or Inspection                            | 1028  |
+| Fire Prevention                                                  | 880   |
+
+Showing 10 out of 115
+
