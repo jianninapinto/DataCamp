@@ -1360,3 +1360,43 @@ SELECT standardized, COUNT(*)
 
 Showing 10 out of 115
 
+
+**</> Create a table with indicator variables**
+
+Determine whether medium and high priority requests in the evanston311 data are more likely to contain requesters' contact information: an email address or phone number.
+
+- Emails contain an @.
+- Phone numbers have the pattern of three characters, dash, three characters, dash, four characters. For example: 555-555-1212.
+- 
+Use LIKE to match these patterns. Remember % matches any number of characters (even 0), and _ matches a single character. Enclosing a pattern in % (i.e. before and after your pattern) allows you to locate it within other text.
+
+For example, '%___.com%'would allow you to search for a reference to a website with the top-level domain '.com' and at least three characters preceding it.
+
+Create and store indicator variables for email and phone in a temporary table. LIKE produces True or False as a result, but casting a boolean (True or False) as an integer converts True to 1 and False to 0. This makes the values easier to summarize later.
+
+- Create a temp table indicators from evanston311 with three columns: id, email, and phone.
+- Use LIKE comparisons to detect the email and phone patterns that are in the description, ad cast the result as an integer with CAST().
+
+	- Your phone indicator should use a combination of underscores _ and dashes - to represent a standard 10-digit phone number format.
+	- Remember to start and end your patterns with % so that you can locate the pattern within other text!
+
+```sql
+-- To clear table if it already exists
+DROP TABLE IF EXISTS indicators;
+
+-- Create the indicators temp table
+CREATE TEMP TABLE indicators AS
+  -- Select id
+  SELECT id, 
+         -- Create the email indicator (find @)
+         CAST (description LIKE '%@%' AS integer) AS email,
+         -- Create the phone indicator
+         CAST (description LIKE '%___-___-____%' AS integer) AS phone 
+    -- What table contains the data? 
+    FROM evanston311;
+
+-- Inspect the contents of the new temp table
+SELECT *
+  FROM indicators;
+```
+
