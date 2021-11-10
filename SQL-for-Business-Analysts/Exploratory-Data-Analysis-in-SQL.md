@@ -1586,3 +1586,30 @@ SELECT now(),
 | now                              | ?column?                         |
 |----------------------------------|----------------------------------|
 | 2021-11-10 03:52:53.397112+00:00 | 2021-11-10 03:57:53.397112+00:00 |
+
+
+**</>Completion time by category**
+
+The evanston311 data includes a date_created timestamp from when each request was created and a date_completed timestamp for when it was completed. The difference between these tells us how long a request was open.
+
+Which category of Evanston 311 requests takes the longest to complete?
+
+- Compute the average difference between the completion timestamp and the creation timestamp by category.
+- Order the results with the largest average time to complete the request first.
+
+```sql
+-- Select the category and the average completion time by category
+SELECT category, 
+       AVG(date_completed-date_created) AS completion_time
+  FROM evanston311
+ GROUP BY category
+-- Order the results
+ ORDER BY completion_time DESC;
+```
+
+| category                           | completion_time          |
+|------------------------------------|--------------------------|
+| Rodents- Rats                      | 64 days, 10:58:23.000766 |
+| Fire Prevention - Public Education | 34 days, 16:48:10        |
+| Key Request - All  City Employees  | 32 days, 0:52:11         |
+
