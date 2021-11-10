@@ -1527,4 +1527,62 @@ SELECT count(*)
 | 33    |
 
 
+**</> Date arithmetic**
 
+You can subtract dates or timestamps from each other.
+
+You can add time to dates or timestamps using intervals. An interval is specified with a number of units and the name of a datetime field. For example:
+
+'3 days'::interval
+'6 months'::interval
+'1 month 2 years'::interval
+'1 hour 30 minutes'::interval
+Practice date arithmetic with the Evanston 311 data and now().
+
+1. Subtract the minimum date_created from the maximum date_created.
+
+```sql
+-- Subtract the min date_created from the max
+SELECT MAX(date_created) - MIN(date_created)
+  FROM evanston311;
+```
+
+| ?column?           |
+|--------------------|
+| 911 days, 16:33:39 |
+
+2. Using now(), find out how old the most recent evanston311 request was created.
+
+```sql
+-- How old is the most recent request?
+SELECT now() - MAX(date_created)
+  FROM evanston311;
+```
+
+| ?column?                   |
+|----------------------------|
+| 1228 days, 11:12:47.152687 |
+
+3. Add 100 days to the current timestamp.
+
+```sql
+-- Add 100 days to the current timestamp
+SELECT now() + '100 days':: interval;
+```
+
+| ?column?                         |
+|----------------------------------|
+| 2022-02-18 03:50:58.972975+00:00 |
+
+4. Select the current timestamp and the current timestamp plus 5 minutes.
+
+```sql
+-- Select the current timestamp, 
+-- and the current timestamp + 5 minutes
+SELECT now(),
+    now() + '5 minutes':: interval;
+```
+
+| now                              | ?column?                         |
+|----------------------------------|----------------------------------|
+| 2021-11-10 03:52:53.397112+00:00 | 2021-11-10 03:57:53.397112+00:00 |
