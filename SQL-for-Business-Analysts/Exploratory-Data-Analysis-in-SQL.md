@@ -1412,3 +1412,37 @@ SELECT *
 | 2554820 | null  | null  |
 | 1770749 | 0     | 0     |
 
+- Join the indicators table to evanston311, selecting the proportion of reports including an email or phone grouped by priority.
+- Include adjustments to account for issues arising from integer division.
+
+```sql
+-- To clear table if it already exists
+DROP TABLE IF EXISTS indicators;
+
+-- Create the temp table
+CREATE TEMP TABLE indicators AS
+  SELECT id, 
+         CAST (description LIKE '%@%' AS integer) AS email,
+         CAST (description LIKE '%___-___-____%' AS integer) AS phone 
+    FROM evanston311;
+  
+-- Select the column you'll group by
+SELECT priority,
+       -- Compute the proportion of rows with each indicator
+       SUM(email)/COUNT(*)::numeric AS email_prop, 
+       SUM(phone)/COUNT(*)::numeric AS phone_prop
+  -- Tables to select from
+  FROM evanston311
+       LEFT JOIN indicators
+       -- Joining condition
+       ON evanston311.id=indicators.id
+ -- What are you grouping by?
+ GROUP BY priority;
+```
+
+| priority | email_prop             | phone_prop             |
+|----------|------------------------|------------------------|
+| MEDIUM   | 0.01966927763272410792 | 0.01845082680591818973 |
+| NONE     | 0.00412220338419600412 | 0.00568465144110900568 |
+| HIGH     | 0.01136363636363636364 | 0.02272727272727272727 |
+| LOW      | 0.00580270793036750484 | 0.00193423597678916828 |
