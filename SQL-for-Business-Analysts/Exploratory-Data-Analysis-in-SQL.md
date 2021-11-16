@@ -1613,3 +1613,96 @@ SELECT category,
 | Fire Prevention - Public Education | 34 days, 16:48:10        |
 | Key Request - All  City Employees  | 32 days, 0:52:11         |
 
+
+**</> Date parts**
+
+In this exercise, you'll use date_part() to gain insights about when Evanston 311 requests are submitted and completed.
+
+1. - How many requests are created in each of the 12 months during 2016-2017?
+
+```sql
+-- Extract the month from date_created and count requests
+SELECT date_part('month', date_created) AS month, 
+       COUNT(*)
+  FROM evanston311
+ -- Limit the date range
+ WHERE date_created >='2016-01-01'
+   AND date_created < '2018-01-01'
+ -- Group by what to get monthly counts?
+ GROUP BY month;
+```
+
+| month | count |
+|-------|-------|
+| 6     | 3404  |
+| 8     | 3109  |
+| 4     | 2385  |
+| 3     | 2171  |
+| 5     | 2674  |
+| 10    | 2398  |
+| 11    | 2283  |
+| 9     | 2760  |
+| 12    | 2000  |
+| 1     | 1811  |
+| 2     | 1774  |
+| 7     | 3063  |
+
+2. - What is the most common hour of the day for requests to be created?
+
+```sql
+-- Get the hour and count requests
+SELECT date_part('hour', date_created) AS hour,
+       count(*)
+  FROM evanston311
+ GROUP BY hour
+ -- Order results to select most common
+ ORDER BY count DESC
+ LIMIT 1;
+```
+
+| hour | count |
+|------|-------|
+| 9    | 4089  |
+
+3. - During what hours are requests usually completed? Count requests completed by hour.
+   - Order the results by hour.
+
+```sql
+-- Count requests completed by hour
+SELECT date_part('hour', date_completed) AS hour,
+       count(*)
+  FROM evanston311
+ GROUP BY hour
+ ORDER by hour;
+```
+
+| hour | count |
+|------|-------|
+| 0    | 13    |
+| 1    | 10    |
+| 2    | 11    |
+| 3    | 19    |
+| 4    | 9     |
+| 5    | 50    |
+| 6    | 1296  |
+| 7    | 1870  |
+| 8    | 2516  |
+| 9    | 2744  |
+| 10   | 3162  |
+| 11   | 3351  |
+| 12   | 3580  |
+| 13   | 4787  |
+| 14   | 5059  |
+| 15   | 5242  |
+| 16   | 1605  |
+| 17   | 428   |
+| 18   | 204   |
+| 19   | 131   |
+| 20   | 101   |
+| 21   | 124   |
+| 22   | 69    |
+| 23   | 50    |
+
+
+
+
