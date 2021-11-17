@@ -1824,3 +1824,64 @@ SELECT day
 | 2017-12-25 |
 | 2018-01-06 |
 | 2018-01-14 |
+
+
+**</> Custom aggregation periods**
+
+Find the median number of Evanston 311 requests per day in each six month period from 2016-01-01 to 2018-06-30. Build the query following the three steps below.
+
+Recall that to aggregate data by non-standard date/time intervals, such as six months, you can use generate_series() to create bins with lower and upper bounds of time, and then summarize observations that fall in each bin.
+
+- Use generate_series() to create bins of 6 month intervals. Recall that the upper bin values are exclusive, so the values need to be one day greater than the last day to be included in the bin.
+
+	- Notice how in the sample code, the first bin value of the upper bound is July 1st, and not June 30th.
+	- Use the same approach when creating the last bin values of the lower and upper bounds (i.e. for 2018).
+
+```sql
+-- Generate 6 month bins covering 2016-01-01 to 2018-06-30
+
+-- Create lower bounds of bins
+SELECT generate_series('2016-01-01',  -- First bin lower value
+                       '2018-01-30',  -- Last bin lower value
+                       '6 months'::interval) AS lower,
+-- Create upper bounds of bins
+       generate_series('2016-07-01',  -- First bin upper value
+                       '2018-07-01',  -- Last bin upper value
+                       '6 months'::interval) AS upper;
+```
+
+| lower                     | upper                     |
+|---------------------------|---------------------------|
+| 2016-01-01 00:00:00+00:00 | 2016-07-01 00:00:00+00:00 |
+| 2016-07-01 00:00:00+00:00 | 2017-01-01 00:00:00+00:00 |
+| 2017-01-01 00:00:00+00:00 | 2017-07-01 00:00:00+00:00 |
+| 2017-07-01 00:00:00+00:00 | 2018-01-01 00:00:00+00:00 |
+| 2018-01-01 00:00:00+00:00 | 2018-07-01 00:00:00+00:00 |
+
+- Count the number of requests created per day. Remember to not count *, or you will risk counting NULL values.
+
+- Include days with no requests by joining evanston311 to a daily series from 2016-01-01 to 2018-06-30.
+
+	- Note that because we are not generating bins, you can use June 30th as your series end date.
+
+```sql
+-- Count number of requests made per day
+SELECT day, COUNT(date_created) AS count
+-- Use a daily series from 2016-01-01 to 2018-06-30 
+-- to include days with no requests
+  FROM (SELECT generate_series('2016-01-01',  -- series start date
+                               '2018-06-30',  -- series end date
+                               '1 day'::interval)::date AS day) AS daily_series
+       LEFT JOIN evanston311
+       -- match day from above (which is a date) to date_created
+       ON day = date_created::date
+ GROUP BY day;
+```
+
+| day        | count |
+|------------|-------|
+| 2016-01-01 | 5     |
+| 2016-01-02 | 27    |
+| 2016-01-03 | 8     |
+| ...        | ...   |
+
