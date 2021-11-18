@@ -2188,3 +2188,4 @@ SELECT created.month,
 | 2018-05-01 00:00:00+00:00 | 46            | 47              |
 | 2018-06-01 00:00:00+00:00 | 52            | 55              |
 
+There is a slight correlation between completion times and the number of requests per month. But the bigger issue is the disproportionately large number of requests completed in November 2017.
