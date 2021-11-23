@@ -92,7 +92,7 @@ WHERE date_renting BETWEEN '2018-04-01' AND '2018-08-31'; -- from beginning Apri
 | ...        | ...         | ...      | ...    | ...          |
 
 
-3. Put the most recent records of movie rentals on top of the resulting table and order them in decreasing order.
+3. - Put the most recent records of movie rentals on top of the resulting table and order them in decreasing order.
 
 ```sql
 SELECT *
