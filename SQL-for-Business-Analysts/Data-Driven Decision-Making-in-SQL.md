@@ -1,4 +1,4 @@
-# 1. Introduction to business intelligence for a online movie rental database
+# 1. Introduction to business intelligence for an online movie rental database
 
 **</> Exploring the database**
 
