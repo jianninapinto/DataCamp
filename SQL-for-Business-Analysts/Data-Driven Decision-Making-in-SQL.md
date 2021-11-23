@@ -108,4 +108,52 @@ ORDER BY date_renting DESC; -- Order by recency in decreasing order
 | 551        | 86          | 13       | 8      | 2018-08-29   |
 | ...        | ...         | ...      | ...    | ...          |
 
+**</>Selecting movies**
+
+The table movies contains all movies available on the online platform.
+
+1. - Select all movies which are not dramas.
+
+```sql
+SELECT *
+FROM movies
+WHERE genre <> 'Drama'; -- All genres except drama
+```
+
+| movie_id | title                      | genre                     | runtime | year_of_release | renting_price |
+|----------|----------------------------|---------------------------|---------|-----------------|---------------|
+| 1        | One Night at McCool's      | Comedy                    | 93      | 2001            | 2.09          |
+| 3        | What Women Want            | Comedy                    | 127     | 2001            | 2.59          |
+| 5        | The Fellowship of the Ring | Science Fiction & Fantasy | 178     | 2001            | 2.59          |
+| ...      | ...                        | ...                       | ...     | ...             | ...           |
+
+2. - Select the movies 'Showtime', 'Love Actually' and 'The Fighter'.
+
+```sql
+SELECT *
+FROM movies
+WHERE title IN ('Showtime', 'Love Actually', 'The Fighter'); -- Select all movies with the given titles
+```
+
+| movie_id | title         | genre  | runtime | year_of_release | renting_price |
+|----------|---------------|--------|---------|-----------------|---------------|
+| 11       | Showtime      | Comedy | 95      | 2002            | 1.79          |
+| 20       | Love Actually | Comedy | 135     | 2003            | 2.29          |
+| 53       | The Fighter   | Other  | 116     | 2010            | 2.49          |
+
+3. - Order the movies by increasing renting price.
+
+```sql
+SELECT *
+FROM movies
+ORDER BY renting_price ASC; -- Order the movies by increasing renting price
+```
+
+| movie_id | title                                  | genre                     | runtime | year_of_release | renting_price |
+|----------|----------------------------------------|---------------------------|---------|-----------------|---------------|
+| 42       | No Country for Old Men                 | Drama                     | 122     | 2007            | 1.49          |
+| 16       | 25th Hour                              | Drama                     | 135     | 2003            | 1.59          |
+| 49       | Harry Potter and the Half-Blood Prince | Science Fiction & Fantasy | 153     | 2009            | 1.59          |
+| 37       | Candy                                  | Drama                     | 116     | 2006            | 1.59          |
+
 
