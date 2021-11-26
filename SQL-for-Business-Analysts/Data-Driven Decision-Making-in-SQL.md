@@ -405,4 +405,39 @@ c. The average is null because one of the ratings of the movie is null.
 
 Note: The average is null only if all values are null.
 
+**</> Average rating per customer**
 
+Similar to what you just did, you will now look at the average movie ratings, this time for customers. So you will obtain a table with the average rating given by each customer. Further, you will include the number of ratings and the number of movie rentals per customer. You will report these summary statistics only for customers with more than 7 movie rentals and order them in ascending order by the average rating.
+
+- Group the data in the table renting by customer_id and report the customer_id, the average rating, the number of ratings and the number of movie rentals.
+- Select only customers with more than 7 movie rentals.
+- Order the resulting table by the average rating in ascending order.
+
+```sql
+SELECT customer_id, -- Report the customer_id
+      AVG(rating),  -- Report the average rating per customer
+      COUNT(rating),  -- Report the number of ratings per customer
+      COUNT(renting_id)  -- Report the number of movie rentals per customer
+FROM renting
+GROUP BY customer_id
+HAVING COUNT(renting_id)> 7  -- Select only customers with more than 7 movie rentals
+ORDER BY AVG(rating); -- Order by the average rating in ascending order
+```
+
+| customer_id | avg                | count | count |
+|-------------|--------------------|-------|-------|
+| 104         | 6.2500000000000000 | 4     | 8     |
+| 28          | 6.7142857142857143 | 7     | 11    |
+| 111         | 7.0000000000000000 | 3     | 10    |
+| 113         | 7.0000000000000000 | 7     | 15    |
+| 25          | 7.2000000000000000 | 5     | 10    |
+| 21          | 7.3333333333333333 | 6     | 14    |
+| 92          | 7.5714285714285714 | 7     | 11    |
+| 49          | 7.6250000000000000 | 8     | 13    |
+| 35          | 7.6666666666666667 | 6     | 9     |
+| 52          | 7.8750000000000000 | 8     | 9     |
+| 108         | 8.0000000000000000 | 6     | 10    |
+| 114         | 8.0000000000000000 | 6     | 11    |
+| ...         | ...                | ...   | ...   |
+
+Note: Customer number 104 gave the lowest average ratings for 4 movies.
