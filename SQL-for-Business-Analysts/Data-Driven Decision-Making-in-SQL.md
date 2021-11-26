@@ -299,3 +299,41 @@ WHERE date_renting >= '2019-01-01';
 | 159            | 7.9462365591397849 | 93             |
 
 
+# 2. Decision Making with simple SQL queries
+
+**</> First account for each country.**
+
+Conduct an analysis to see when the first customer accounts were created for each country.
+
+- Create a table with a row for each country and columns for the country name and the date when the first customer account was created.
+- Use the alias first_account for the column with the dates.
+- Order by date in ascending order.
+
+```sql
+SELECT country, -- For each country report the earliest date when an account was created
+	MIN(date_account_start) AS first_account
+FROM customers
+GROUP BY country
+ORDER BY first_account ASC;
+```
+
+| country      | first_account |
+|--------------|---------------|
+| France       | 2017-01-13    |
+| Hungary      | 2017-01-18    |
+| Belgium      | 2017-01-28    |
+| Slovenia     | 2017-01-31    |
+| Spain        | 2017-02-14    |
+| Italy        | 2017-02-28    |
+| Poland       | 2017-03-03    |
+| Great Britan | 2017-03-31    |
+| Denmark      | 2017-04-30    |
+| USA          | 2017-09-13    |
+| Austria      | 2017-11-22    |
+
+Note: The first customer account was created in France. 
+
+
+
+
+
