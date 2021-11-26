@@ -178,3 +178,39 @@ AND rating IS NOT NULL; -- Rating exists
 | 6          | 50          | 71       | 7      | 2018-10-09   |
 | 8          | 73          | 65       | 10     | 2018-06-05   |
 | ...        | ...         | ...      | ...    | ...          |
+
+
+**</> Summarizing customer information**
+In most business decisions customers are analyzed in groups, such as customers per country or customers per age group.
+
+1. - Count the number of customers born in the 80s.
+
+```sql
+SELECT COUNT(*) -- Count the total number of customers
+FROM customers
+WHERE date_of_birth BETWEEN '1980-01-01' AND '1989-12-31'; -- Select customers born between 1980-01-01 and 1989-12-31
+```
+| count |
+|-------|
+| 33    |
+
+2. - Count the number of customers from Germany.
+
+```sql
+SELECT COUNT(*)   -- Count the total number of customers
+FROM customers
+WHERE country = 'Germany'; -- Select all customers from Germany
+```
+| count |
+|-------|
+| 0     |
+
+3. - Count the number of countries where MovieNow has customers.
+
+```sql
+SELECT COUNT(DISTINCT country)   -- Count the number of countries
+FROM customers;
+```
+| count |
+|-------|
+| 11    |
