@@ -214,3 +214,88 @@ FROM customers;
 | count |
 |-------|
 | 11    |
+
+**</> Ratings of movie 25**
+
+The movie ratings give us insight into the preferences of our customers. Report summary statistics, such as the minimum, maximum, average, and count, of ratings for the movie with ID 25.
+
+- Select all movie rentals of the movie with movie_id 25 from the table renting.
+- For those records, calculate the minimum, maximum and average rating and count the number of ratings for this movie.
+
+```sql
+SELECT MIN(rating) AS min_rating, -- Calculate the minimum rating and use alias min_rating
+	   MAX(rating) AS max_rating, -- Calculate the maximum rating and use alias max_rating
+	   AVG(rating) AS avg_rating, -- Calculate the average rating and use alias avg_rating
+	   COUNT(RATING) AS number_ratings -- Count the number of ratings and use alias number_ratings
+FROM renting
+WHERE movie_id = 25; -- Select all records of the movie with ID 25
+```
+| min_rating | max_rating | avg_rating         | number_ratings |
+|------------|------------|--------------------|----------------|
+| 5          | 10         | 7.5000000000000000 | 8              |
+
+Note: This movie has 8 ratings with minimum 5, maximum 10 and average 7.5 rating.
+
+**</> Examining annual rentals**
+
+You are asked to provide a report about the development of the company. Specifically, your manager is interested in the total number of movie rentals, the total number of ratings and the average rating of all movies since the beginning of 2019.
+
+- First, select all records of movie rentals since January 1st 2019.
+
+```sql
+SELECT * -- Select all records of movie rentals since January 1st 2019
+FROM renting
+WHERE date_renting >= '2019-01-01'; 
+```
+| enting_id | customer_id | movie_id | rating | date_renting |
+|-----------|-------------|----------|--------|--------------|
+| 5         | 104         | 15       | 7      | 2019-03-18   |
+| 17        | 22          | 46       | 10     | 2019-02-16   |
+| 18        | 36          | 39       | 10     | 2019-03-20   |
+| 27        | 7           | 36       | null   | 2019-03-14   |
+| 32        | 8           | 42       | 10     | 2019-02-13   |
+| ...       | ...         | ...      | ...    | ...          |
+
+- Now, count the number of movie rentals and calculate the average rating since the beginning of 2019.
+
+```sql
+SELECT 
+	COUNT(renting_id), -- Count the total number of rented movies
+	AVG(rating) -- Add the average rating
+FROM renting
+WHERE date_renting >= '2019-01-01';
+```
+
+| count | avg                |
+|-------|--------------------|
+| 159   | 7.9462365591397849 |
+
+- Use as alias column names number_renting and average_rating respectively.
+
+```sql
+SELECT 
+	COUNT(*) AS number_renting, -- Give it the column name number_renting
+	AVG(rating) AS average_rating  -- Give it the column name average_rating
+FROM renting
+WHERE date_renting >= '2019-01-01';
+```
+| number_renting | average_rating     |
+|----------------|--------------------|
+| 159            | 7.9462365591397849 |
+
+- Finally, count how many ratings exist since 2019-01-01.
+
+```sql
+SELECT 
+	COUNT(*) AS number_renting,
+	AVG(rating) AS average_rating, 
+    COUNT(rating) AS number_ratings -- Add the total number of ratings here.
+FROM renting
+WHERE date_renting >= '2019-01-01';
+```
+
+| number_renting | average_rating     | number_ratings |
+|----------------|--------------------|----------------|
+| 159            | 7.9462365591397849 | 93             |
+
+
