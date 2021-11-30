@@ -441,3 +441,142 @@ ORDER BY AVG(rating); -- Order by the average rating in ascending order
 | ...         | ...                | ...   | ...   |
 
 Note: Customer number 104 gave the lowest average ratings for 4 movies.
+
+**</> Join renting and customers**
+
+For many analyses it is necessary to add customer information to the data in the table renting.
+
+- Augment the table renting with all columns from the table customers with a LEFT JOIN.
+- Use as alias' for the tables r and c respectively.
+
+```sql
+SELECT * -- Join renting with customers
+FROM renting AS r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id;
+```
+
+| renting_id | customer_id | movie_id | rating | date_renting | customer_id | name              | country      | gender | date_of_birth | date_account_start |
+|------------|-------------|----------|--------|--------------|-------------|-------------------|--------------|--------|---------------|--------------------|
+| 1          | 41          | 8        | null   | 2018-10-09   | 41          | Zara Mitchell     | Great Britan | female | 1994-07-08    | 2017-06-12         |
+| 2          | 10          | 29       | 10     | 2017-03-01   | 10          | Arnout Veenhuis   | Belgium      | male   | 1984-07-26    | 2017-01-28         |
+| 3          | 108         | 45       | 4      | 2018-06-08   | 108         | Saúl Tafoya Meraz | Spain        | male   | 1992-05-15    | 2017-03-13         |
+| 4          | 39          | 66       | 8      | 2018-10-22   | 39          | Amy Haynes        | Great Britan | female | 1975-07-28    | 2018-01-19         |
+| ...        | ...         | ...      | ...    | ...          | ...         | ...               | ...          | ...    | ...           | ...                |
+
+- Select only records from customers coming from Belgium.
+
+```sql
+SELECT *
+FROM renting AS r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+WHERE country = 'Belgium'; -- Select only records from customers coming from Belgium
+```
+
+| renting_id | customer_id | movie_id | rating | date_renting | customer_id | name                 | country | gender | date_of_birth | date_account_start |
+|------------|-------------|----------|--------|--------------|-------------|----------------------|---------|--------|---------------|--------------------|
+| 2          | 10          | 29       | 10     | 2017-03-01   | 10          | Arnout Veenhuis      | Belgium | male   | 1984-07-26    | 2017-01-28         |
+| 14         | 8           | 29       | null   | 2018-08-03   | 8           | Jaëla van den Dolder | Belgium | female | 1990-08-31    | 2018-02-08         |
+| 27         | 7           | 36       | null   | 2019-03-14   | 7           | Annelous Sneep       | Belgium | female | 1993-11-14    | 2018-05-12         |
+| 32         | 8           | 42       | 10     | 2019-02-13   | 8           | Jaëla van den Dolder | Belgium | female | 1990-08-31    | 2018-02-08         |
+| ...        | ...         | ...      | ...    | ...          | ...         | ...                  | ...     | ...    | ...           | ...                |
+
+- Average ratings of customers from Belgium.
+
+```sql
+SELECT AVG(rating) -- Average ratings of customers from Belgium
+FROM renting AS r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+WHERE c.country='Belgium';
+```
+
+| avg                |
+|--------------------|
+| 8.9000000000000000 |
+
+
+**</> Aggregating revenue, rentals and active customers**
+
+The management of MovieNow wants to report key performance indicators (KPIs) for the performance of the company in 2018. They are interested in measuring the financial successes as well as user engagement. Important KPIs are, therefore, the profit coming from movie rentals, the number of movie rentals and the number of active customers.
+
+- First, you need to join movies on renting to include the renting_price from the movies table for each renting record.
+- Use as alias' for the tables m and r respectively.
+
+```sql
+SELECT *
+FROM renting AS r
+LEFT JOIN movies AS m -- Choose the correct join statment
+ON r.movie_id = m.movie_id;
+```
+
+| renting_id | customer_id | movie_id | rating | date_renting | movie_id | title              | genre  | runtime | year_of_release | renting_price |
+|------------|-------------|----------|--------|--------------|----------|--------------------|--------|---------|-----------------|---------------|
+| 1          | 41          | 8        | null   | 2018-10-09   | 8        | Waking Up in Reno  | Comedy | 91      | 2002            | 2.59          |
+| 2          | 10          | 29       | 10     | 2017-03-01   | 29       | Two for the Money  | Drama  | 122     | 2005            | 2.79          |
+| 3          | 108         | 45       | 4      | 2018-06-08   | 45       | Burn After Reading | Drama  | 96      | 2008            | 2.39          |
+| ...        | ...         | ...      | ...    | ...          | ...      | ...                | ...    | ...     | ...             | ...           |
+
+- Calculate the revenue coming from movie rentals, the number of movie rentals and the number of customers who rented a movie.
+
+```sql
+SELECT 
+	SUM(m.renting_price),  -- Get the revenue from movie rentals
+	COUNT(r.renting_id), -- Count the number of rentals
+	COUNT (distinct r.customer_id)  -- Count the number of customers
+FROM renting AS r
+LEFT JOIN movies AS m
+ON r.movie_id = m.movie_id;
+```
+
+| sum     | count | count |
+|---------|-------|-------|
+| 1275.72 | 578   | 116   |
+
+- Now, you can report these values for the year 2018. Calculate the revenue in 2018, the number of movie rentals and the number of active customers in 2018. An active customer is a customer who rented at least one movie in 2018.
+
+```sql
+SELECT 
+	SUM(m.renting_price), 
+	COUNT(*), 
+	COUNT(DISTINCT r.customer_id)
+FROM renting AS r
+LEFT JOIN movies AS m
+ON r.movie_id = m.movie_id
+-- Only look at movie rentals in 2018
+WHERE date_renting BETWEEN '2018-01-01' AND '2018-12-31';
+```
+
+| sum    | count | count |
+|--------|-------|-------|
+| 658.02 | 298   | 93    |
+
+Note: We calculated a turnover of 658.02 and found the number of rentals to be 298 and the number of active users to be 93 in 2018.
+
+**</> Movies and actors**
+
+You are asked to give an overview of which actors play in which movie.
+
+- Create a list of actor names and movie titles in which they act. Make sure that each combination of actor and movie appears only once.
+- Use as an alias for the table actsin the two letters ai.
+
+```sql
+SELECT m.title, -- Create a list of movie titles and actor names
+       a.name
+FROM actsin AS ai
+LEFT JOIN movies AS m
+ON m.movie_id = ai.movie_id
+LEFT JOIN actors AS a
+ON a.actor_id = ai.actor_id;
+```
+
+| title         | name          |
+|---------------|---------------|
+| Candy         | Abbie Cornish |
+| Jack and Jill | Adam Sandler  |
+| Simone        | Al Pacino     |
+| ...           | ...           |
+
+
+
