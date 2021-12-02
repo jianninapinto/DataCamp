@@ -579,4 +579,90 @@ ON a.actor_id = ai.actor_id;
 | ...           | ...           |
 
 
+**</> Income from movies**
+
+How much income did each movie generate? To answer this question subsequent SELECT statements can be used.
+
+- Use a join to get the movie title and price for each movie rental.
+
+```sql
+SELECT m.title, -- Use a join to get the movie title and price for each movie rental
+       m.renting_price
+FROM renting AS r
+LEFT JOIN movies AS m
+ON r.movie_id=m.movie_id;
+```
+
+| title              | renting_price |
+|--------------------|---------------|
+| Waking Up in Reno  | 2.59          |
+| Two for the Money  | 2.79          |
+| Burn After Reading | 2.39          |
+| ...                | ...           |
+
+- Report the total income for each movie.
+- Order the result by decreasing income.
+
+```sql
+SELECT title, -- Report the income from movie rentals for each movie 
+       SUM(rm.renting_price) AS income_movie
+FROM
+       (SELECT m.title,  
+               m.renting_price
+       FROM renting AS r
+       LEFT JOIN movies AS m
+       ON r.movie_id=m.movie_id) AS rm
+GROUP BY title
+ORDER BY income_movie DESC; -- Order the result by decreasing income
+```
+
+| title                              | income_movie |
+|------------------------------------|--------------|
+| Bridget Jones - The Edge of Reason | 37.57        |
+| Fair Game                          | 34.68        |
+| The Kingdom                        | 31.35        |
+| ...                                | ...          |
+
+- Question
+
+Which statement about the movie 'Django Unchained' is NOT correct?
+
+Possible Answers
+
+a. The income from this movie is 29.59.
+
+b. The income from 'Django Unchained' is lower than from 'The Kingdom'.
+
+`c. The income from 'Django Unchained' is higher than from 'Simone'.`
+
+d. 'Django Unchained' has the 5th highest income.
+
+Note: 'Django Unchained' and 'Simone' generated the same income.
+
+**</> Age of actors from the USA**
+
+Now you will explore the age of American actors and actresses. Report the date of birth of the oldest and youngest US actor and actress.
+
+- Create a subsequent SELECT statements in the FROM clause to get all information about actors from the USA.
+- Give the subsequent SELECT statement the alias a.
+- Report for actors from the USA the year of birth of the oldest and the year of birth of the youngest actor and actress.
+
+```sql
+SELECT a.gender, -- Report for male and female actors from the USA 
+       MIN(a.year_of_birth), -- The year of birth of the oldest actor
+       MAX(a.year_of_birth) -- The year of birth of the youngest actor
+FROM
+    (SELECT * -- Use a subsequent SELECT to get all information about actors from the USA
+    FROM actors
+    WHERE nationality = 'USA') AS a -- Give the table the name a
+GROUP BY a.gender;
+```
+
+Note: The oldest actor was born in 1930 and the oldest actress in 1945.
+
+| gender | min  | max  |
+|--------|------|------|
+| female | 1945 | 1993 |
+| male   | 1930 | 1992 |
+
 
