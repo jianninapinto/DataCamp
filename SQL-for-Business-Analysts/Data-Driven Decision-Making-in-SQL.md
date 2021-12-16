@@ -753,3 +753,94 @@ GROUP BY gender;
 
 Note: The oldest actor was born in 1930 and the oldest actress in 1945.
 
+**</> Identify favorite movies for a group of customers**
+
+Which is the favorite movie on MovieNow? Answer this question for a specific group of customers: for all customers born in the 70s.
+
+- Augment the table renting with customer information and information about the movies.
+- For each join use the first letter of the table name as alias.
+
+```sql
+SELECT *
+FROM renting AS r
+LEFT JOIN customers AS c   -- Add customer information
+ON r.customer_id = c.customer_id
+LEFT JOIN movies as m   -- Add movie information
+ON r.movie_id = m.movie_id;
+```
+
+| renting_id | customer_id | movie_id | rating | date_renting | customer_id | name              | country      | gender | date_of_birth | date_account_start | movie_id | title              | genre  | runtime | year_of_release | renting_price |
+|------------|-------------|----------|--------|--------------|-------------|-------------------|--------------|--------|---------------|--------------------|----------|--------------------|--------|---------|-----------------|---------------|
+| 1          | 41          | 8        | null   | 2018-10-09   | 41          | Zara Mitchell     | Great Britan | female | 1994-07-08    | 2017-06-12         | 8        | Waking Up in Reno  | Comedy | 91      | 2002            | 2.59          |
+| 2          | 10          | 29       | 10     | 2017-03-01   | 10          | Arnout Veenhuis   | Belgium      | male   | 1984-07-26    | 2017-01-28         | 29       | Two for the Money  | Drama  | 122     | 2005            | 2.79          |
+| 3          | 108         | 45       | 4      | 2018-06-08   | 108         | Saúl Tafoya Meraz | Spain        | male   | 1992-05-15    | 2017-03-13         | 45       | Burn After Reading | Drama  | 96      | 2008            | 2.39          |
+| ...        | ...         | ...      | ...    | ...          | ...         | ...               | ...          | ...    | ...           | ...                | ...      | ...                | ...    | ...     | ...             | ...           |
+
+
+- Select only those records of customers born in the 70s.
+
+```sql
+SELECT *
+FROM renting AS r
+LEFT JOIN customers AS c
+ON c.customer_id = r.customer_id
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+WHERE date_of_birth BETWEEN '1970-01-01' AND '1979-12-31' ; -- Select customers born in the 70s
+```
+
+| renting_id | customer_id | movie_id | rating | date_renting | customer_id | name          | country      | gender | date_of_birth | date_account_start | movie_id | title                                         | genre                     | runtime | year_of_release | renting_price |
+|------------|-------------|----------|--------|--------------|-------------|---------------|--------------|--------|---------------|--------------------|----------|-----------------------------------------------|---------------------------|---------|-----------------|---------------|
+| 4          | 39          | 66       | 8      | 2018-10-22   | 39          | Amy Haynes    | Great Britan | female | 1975-07-28    | 2018-01-19         | 66       | The Hunger Games                              | Drama                     | 142     | 2012            | 1.59          |
+| 11         | 61          | 61       | null   | 2017-06-04   | 61          | Nella Manfrin | Italy        | female | 1974-01-11    | 2017-05-14         | 61       | Harry Potter and the Deathly Hallows – Part 2 | Science Fiction & Fantasy | 130     | 2011            | 1.99          |
+| ...        | ...         | ...      | ...    | ...          | ...         | ...           | ...          | ...    | ...           | ...                | ...      | ...                                           | ...                       | ...     | ...             | ...           |
+
+- For each movie, report the number of times it was rented, as well as the average rating. Limit your results to customers born in the 1970s.
+
+```sql
+SELECT m.title, 
+COUNT(*),-- Report number of views per movie
+AVG(r.rating) -- Report the average rating per movie
+FROM renting AS r
+LEFT JOIN customers AS c
+ON c.customer_id = r.customer_id
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+WHERE c.date_of_birth BETWEEN '1970-01-01' AND '1979-12-31'
+GROUP BY m.title;
+```
+
+| title          | count | avg                 |
+|----------------|-------|---------------------|
+| V for Vendetta | 2     | 7.0000000000000000  |
+| The Fighter    | 4     | 10.0000000000000000 |
+| ...            | ...   | ...                 |
+
+- Remove those movies from the table with only one rental.
+- Order the result table such that movies with highest rating come first.
+
+```sql
+SELECT m.title, 
+COUNT(*),
+AVG(r.rating)
+FROM renting AS r
+LEFT JOIN customers AS c
+ON c.customer_id = r.customer_id
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+WHERE c.date_of_birth BETWEEN '1970-01-01' AND '1979-12-31'
+GROUP BY m.title
+HAVING COUNT(*)>1 -- Remove movies with only one rental
+ORDER BY AVG(r.rating) DESC; -- Order with highest rating first
+```
+
+| title                                         | count | avg                 |
+|-----------------------------------------------|-------|---------------------|
+| Waking Up in Reno                             | 2     | null                |
+| Ray                                           | 2     | null                |
+| Harry Potter and the Deathly Hallows – Part 2 | 2     | null                |
+| Showtime                                      | 5     | null                |
+| One Night at McCool's                         | 2     | 10.0000000000000000 |
+| Django Unchained                              | 4     | 10.0000000000000000 |
+| ...                                           | ...   | ...                 |
+
