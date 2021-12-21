@@ -925,3 +925,51 @@ ORDER BY avg_rating DESC, number_views DESC;
 | ...              | ...    | ...          | ...                |
 
 Note: Catherine Keener is the favorite actress among female Spain customers and that male customers from Spain like the actors from Harry Potter best: Emma Watson, Daniel Radcliffe and Rupert Grint.
+
+**</> KPIs per country**
+
+In chapter 1 you were asked to provide a report about the development of the company. This time you have to prepare a similar report with KPIs for each country separately. Your manager is interested in the total number of movie rentals, the average rating of all movies and the total revenue for each country since the beginning of 2019.
+
+- Augment the table renting with information about customers and movies.
+- Use as alias the first latter of the table name.
+- Select only records about rentals since beginning of 2019.
+
+```sql
+SELECT *
+FROM renting as r -- Augment the table renting with information about customers
+LEFT JOIN customers as c
+ON r.customer_id = c.customer_id
+LEFT JOIN movies as m -- Augment the table renting with information about movies
+ON r.movie_id = m.movie_id
+WHERE r.date_renting>='01-01-2019'; -- Select only records about rentals since the beginning of 2019
+```
+
+- Calculate the number of movie rentals.
+- Calculate the average rating.
+- Calculate the revenue from movie rentals.
+- Report these KPIs for each country.
+
+```sql
+SELECT 
+	c.country,                    -- For each country report
+	COUNT(*) AS number_renting, -- The number of movie rentals
+	AVG(r.rating) AS average_rating, -- The average rating
+	SUM(m.renting_price) AS revenue         -- The revenue from movie rentals
+FROM renting AS r
+LEFT JOIN customers AS c
+ON c.customer_id = r.customer_id
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+WHERE date_renting >= '2019-01-01'
+GROUP BY country;
+```
+
+| country      | number_renting | average_rating      | revenue |
+|--------------|----------------|---------------------|---------|
+| null         | 1              | 10.0000000000000000 | 1.79    |
+| Spain        | 26             | 8.0769230769230769  | 57.94   |
+| Great Britan | 9              | 7.2000000000000000  | 17.91   |
+| ...          | ...            | ...                 | ...     |
+
+Note: There is a total revenue of 57.94 for Spain, with 26 movie rentals and an average rating of 8.1.
+
