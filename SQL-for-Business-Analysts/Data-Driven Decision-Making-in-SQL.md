@@ -844,3 +844,84 @@ ORDER BY AVG(r.rating) DESC; -- Order with highest rating first
 | Django Unchained                              | 4     | 10.0000000000000000 |
 | ...                                           | ...   | ...                 |
 
+**</> Identify favorite actors for Spain**
+
+You're now going to explore actor popularity in Spain. Use as alias the first letter of the table, except for the table actsin use ai instead.
+
+- Augment the table renting with information about customers and actors.
+
+```sql
+SELECT *
+FROM renting as r 
+LEFT JOIN customers as c  -- Augment table renting with information about customers 
+ON r.customer_id = c.customer_id
+LEFT JOIN actsin as ai  -- Augment the table renting with the table actsin
+ON r.movie_id = ai.movie_id
+LEFT JOIN actors as a  -- Augment table renting with information about actors
+ON ai.actor_id = a.actor_id;
+```
+
+| renting_id | customer_id | movie_id | rating | date_renting | customer_id | name            | country      | gender | date_of_birth | date_account_start | actsin_id | movie_id | actor_id | actor_id | name               | year_of_birth | nationality  | gender |
+|-----------|-------------|----------|--------|--------------|-------------|-----------------|--------------|--------|---------------|--------------------|-----------|----------|----------|----------|--------------------|---------------|--------------|--------|
+| 1         | 41          | 8        | null   | 2018-10-09   | 41          | Zara Mitchell   | Great Britan | female | 1994-07-08    | 2017-06-12         | 160       | 8        | 107      | 107      | Patrick Swayze     | 1952          | USA          | male   |
+| 1         | 41          | 8        | null   | 2018-10-09   | 41          | Zara Mitchell   | Great Britan | female | 1994-07-08    | 2017-06-12         | 152       | 8        | 103      | 103      | Natasha Richardson | 1963          | British      | female |
+| 1         | 41          | 8        | null   | 2018-10-09   | 41          | Zara Mitchell   | Great Britan | female | 1994-07-08    | 2017-06-12         | 28        | 8        | 23       | 23       | Charlize Theron    | 1975          | South Africa | female |
+| 2         | 10          | 29       | 10     | 2017-03-01   | 10          | Arnout Veenhuis | Belgium      | male   | 1984-07-26    | 2017-01-28         | 172       | 29       | 117      | 117      | Rene Russo         | 1954          | USA          | female |
+| ...       | ...         | ...      | ...    | ...          | ..          | ...             | ...          | ...    | ...           | ...                | ...       | ...      | ...      | ...      | ...                | ...           | ...          | ...    |
+
+- Report the number of movie rentals and the average rating for each actor, separately for male and female customers.
+- Report only actors with more than 5 movie rentals.
+
+```sql
+SELECT a.name,  c.gender,
+       COUNT(*) AS number_views, 
+       AVG(r.rating) AS avg_rating
+FROM renting as r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+LEFT JOIN actsin as ai
+ON r.movie_id = ai.movie_id
+LEFT JOIN actors as a
+ON ai.actor_id = a.actor_id
+
+GROUP BY a.name, c.gender -- For each actor, separately for male and female customers
+HAVING AVG(r.rating) IS NOT NULL 
+AND COUNT(*)>5 -- Report only actors with more than 5 movie rentals
+ORDER BY avg_rating DESC, number_views DESC;
+```
+
+| name            | gender | number_views | avg_rating          |
+|-----------------|--------|--------------|---------------------|
+| Tommy Lee Jones | female | 6            | 10.0000000000000000 |
+| Javier Bardem   | female | 6            | 10.0000000000000000 |
+| Josh Brolin     | female | 6            | 10.0000000000000000 |
+| ...             | ...    | ...          | ...                 |
+
+- Now, report the favorite actors only for customers from Spain.
+
+```sql
+SELECT a.name,  c.gender,
+       COUNT(*) AS number_views, 
+       AVG(r.rating) AS avg_rating
+FROM renting as r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+LEFT JOIN actsin as ai
+ON r.movie_id = ai.movie_id
+LEFT JOIN actors as a
+ON ai.actor_id = a.actor_id
+WHERE country = 'Spain' -- Select only customers from Spain
+GROUP BY a.name, c.gender
+HAVING AVG(r.rating) IS NOT NULL 
+  AND COUNT(*) > 5 
+ORDER BY avg_rating DESC, number_views DESC;
+```
+
+| name             | gender | number_views | avg_rating         |
+|------------------|--------|--------------|--------------------|
+| Catherine Keener | female | 6            | 8.0000000000000000 |
+| Emma Watson      | male   | 7            | 7.6000000000000000 |
+| Daniel Radcliffe | male   | 7            | 7.6000000000000000 |
+| ...              | ...    | ...          | ...                |
+
+Note: Catherine Keener is the favorite actress among female Spain customers and that male customers from Spain like the actors from Harry Potter best: Emma Watson, Daniel Radcliffe and Rupert Grint.
