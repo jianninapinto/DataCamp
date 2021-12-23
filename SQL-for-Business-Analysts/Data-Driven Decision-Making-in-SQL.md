@@ -973,3 +973,123 @@ GROUP BY country;
 
 Note: There is a total revenue of 57.94 for Spain, with 26 movie rentals and an average rating of 8.1.
 
+# 3. Data Driven Decision Making with advanced SQL queries
+
+**</> Often rented movies**
+
+Your manager wants you to make a list of movies excluding those which are hardly ever watched. This list of movies will be used for advertising. List all movies with more than 5 views using a nested query which is a powerful tool to implement selection conditions.
+
+- Select all movie IDs which have more than 5 views.
+
+```sql
+SELECT movie_id -- Select movie IDs with more than 5 views
+FROM renting
+GROUP BY movie_id
+HAVING COUNT(*) > 5
+```
+
+| movie_id |
+|----------|
+| 54       |
+| 29       |
+| 71       |
+| ...      |
+
+
+- Select all information about movies with more than 5 views.
+
+```sql
+SELECT *
+FROM movies
+WHERE movie_id IN -- Select movie IDs from the inner query
+	(SELECT movie_id
+	FROM renting
+	GROUP BY movie_id
+	HAVING COUNT(*) > 5)
+```
+
+| movie_id | title                 | genre  | runtime | year_of_release | renting_price |
+|----------|-----------------------|--------|---------|-----------------|---------------|
+| 1        | One Night at McCool's | Comedy | 93      | 2001            | 2.09          |
+| 2        | Swordfish             | Drama  | 99      | 2001            | 2.19          |
+| ...      | ...                   | ...    | ...     | ...             | ...           |
+
+
+**</> Frequent customers**
+
+Report a list of customers who frequently rent movies on MovieNow.
+
+- List all customer information for customers who rented more than 10 movies.
+
+```sql
+SELECT *
+FROM customers
+WHERE customer_id IN           -- Select all customers with more than 10 movie rentals
+	(SELECT customer_id
+	FROM renting
+	GROUP BY customer_id
+	HAVING COUNT(*) > 10);
+```
+
+| customer_id | name                 | country | gender | date_of_birth | date_account_start |
+|-------------|----------------------|---------|--------|---------------|--------------------|
+| 21          | Avelaine Corbeil     | France  | female | 1986-03-17    | 2017-06-11         |
+| 28          | Sidney Généreux      | France  | male   | 1980-12-01    | 2017-02-04         |
+| 49          | Havasy Kristof       | Hungary | male   | 1998-06-13    | 2017-01-18         |
+| 92          | Honorata Nowak       | Poland  | female | 1986-05-02    | 2017-09-21         |
+| 113         | Lucy Centeno Barrios | Spain   | female | 1970-11-03    | 2017-06-13         |
+| 114         | Canela Gaona Lozano  | Spain   | female | 1997-04-01    | 2017-02-14         |
+
+Note: Avelaine Corbeil from France is one of the customers who rented more than 10 movies.
+
+**</> Movies with rating above average**
+
+For the advertising campaign your manager also needs a list of popular movies with high ratings. Report a list of movies with rating above average.
+
+- Calculate the average over all ratings.
+
+```sql
+SELECT AVG(rating) -- Calculate the total average rating
+FROM renting;
+```
+
+- Select movie IDs and calculate the average rating of movies with rating above average.
+
+```sql
+SELECT movie_id, -- Select movie IDs and calculate the average rating 
+       AVG(rating)
+FROM renting
+GROUP BY movie_id
+HAVING AVG(rating) >           -- Of movies with rating above average
+	(SELECT AVG(rating)
+	FROM renting);
+```
+
+| movie_id | avg                |
+|----------|--------------------|
+| 54       | 8.1666666666666667 |
+| 29       | 8.0000000000000000 |
+| 71       | 8.0000000000000000 |
+| ...      | ...                |
+
+- The advertising team only wants a list of movie titles. Report the movie titles of all movies with average rating higher than the total average.
+
+```sql
+SELECT title -- Report the movie titles of all movies with average rating higher than the total average
+FROM movies
+WHERE movie_id IN
+	(SELECT movie_id
+	 FROM renting
+     GROUP BY movie_id
+     HAVING AVG(rating) > 
+		(SELECT AVG(rating)
+		 FROM renting));
+```
+
+| title                                    | avg                |
+|------------------------------------------|--------------------|
+| What Women Want                          | 8.1666666666666667 |
+| The Fellowship of the Ring               | 8.0000000000000000 |
+| Harry Potter and the Philosopher's Stone | 8.0000000000000000 |
+| ...                                      | ...                |
+
