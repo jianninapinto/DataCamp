@@ -1093,3 +1093,120 @@ WHERE movie_id IN
 | Harry Potter and the Philosopher's Stone | 8.0000000000000000 |
 | ...                                      | ...                |
 
+**</> Analyzing customer behavior**
+
+A new advertising campaign is going to focus on customers who rented fewer than 5 movies. Use a correlated query to extract all customer information for the customers of interest.
+
+- First, count number of movie rentals for customer with customer_id=45. Give the table renting the alias r.
+
+```sql
+-- Count movie rentals of customer 45
+SELECT COUNT(*)
+FROM renting AS r
+WHERE r.customer_id = 45;
+```
+
+| count |
+|-------|
+| 5     |
+
+- Now select all columns from the customer table where the number of movie rentals is smaller than 5.
+
+```sql
+-- Select customers with less than 5 movie rentals
+SELECT *
+FROM customers as c
+WHERE 5 > 
+	(SELECT count(*)
+	FROM renting as r
+	WHERE r.customer_id = c.customer_id);
+```
+
+| customer_id | name               | country | gender | date_of_birth | date_account_start |
+|-------------|--------------------|---------|--------|---------------|--------------------|
+| 2           | Wolfgang Ackermann | Austria | male   | 1971-11-17    | 2018-10-15         |
+| 3           | Daniela Herzog     | Austria | female | 1974-08-07    | 2019-02-14         |
+| 4           | Julia Jung         | Austria | female | 1991-01-04    | 2017-11-22         |
+| ...         | ...                | ...     | ...    | ...           | ...                |
+
+
+**</> Customers who gave low ratings**
+
+Identify customers who were not satisfied with movies they watched on MovieNow. Report a list of customers with minimum rating smaller than 4.
+
+- Calculate the minimum rating of customer with ID 7.
+
+```sql
+-- Calculate the minimum rating of customer with ID 7
+SELECT MIN(rating)
+FROM renting
+WHERE customer_id = 7;
+```
+
+| min |
+|-----|
+| 8   |
+
+- Select all customers with a minimum rating smaller than 4. Use the first letter of the table as an alias.
+
+```sql
+SELECT *
+FROM customers AS c
+WHERE 4 > -- Select all customers with a minimum rating smaller than 4 
+	(SELECT MIN(rating)
+	FROM renting AS r
+	WHERE r.customer_id = c.customer_id);
+```
+
+| customer_id | name            | country      | gender | date_of_birth | date_account_start |
+|-------------|-----------------|--------------|--------|---------------|--------------------|
+| 28          | Sidney Généreux | France       | male   | 1980-12-01    | 2017-02-04         |
+| 41          | Zara Mitchell   | Great Britan | female | 1994-07-08    | 2017-06-12         |
+| 86          | Albin Jaworski  | Poland       | male   | 1984-05-01    | 2017-12-15         |
+| 120         | Robin J. Himes  | USA          | male   | 1988-11-30    | 2018-08-06         |
+
+Note: Sidney Généreux, Zara Mitchell, Albin Jaworski, and Robin J. Himes rated a movie with less than 4.
+
+**</> Movies and ratings with correlated queries**
+
+Report a list of movies that received the most attention on the movie platform, (i.e. report all movies with more than 5 ratings and all movies with an average rating higher than 8).
+
+1. - Select all movies with more than 5 ratings. Use the first letter of the table as an alias.
+
+```sql
+SELECT *
+FROM movies as m
+WHERE 5 < -- Select all movies with more than 5 ratings
+	(SELECT count(rating)
+	FROM renting as r
+	WHERE r.movie_id = m.movie_id);
+```
+
+| movie_id | title          | genre                     | runtime | year_of_release | renting_price |
+|----------|----------------|---------------------------|---------|-----------------|---------------|
+| 4        | Training Day   | Drama                     | 122     | 2001            | 1.79          |
+| 10       | Simone         | Drama                     | 117     | 2002            | 2.69          |
+| 12       | The Two Towers | Science Fiction & Fantasy | 179     | 2002            | 2.39          |
+| ...      | ...            | ...                       | ...     | ...             | ...           |
+
+2. - Select all movies with an average rating higher than 8.
+
+```sql
+SELECT *
+FROM movies AS m
+WHERE 8 < -- Select all movies with an average rating higher than 8
+	(SELECT AVG(rating)
+	FROM renting AS r
+	WHERE r.movie_id = m.movie_id);
+```
+
+| movie_id | title                                    | genre                     | runtime | year_of_release | renting_price |
+|----------|------------------------------------------|---------------------------|---------|-----------------|---------------|
+| 3        | What Women Want                          | Comedy                    | 127     | 2001            | 2.59          |
+| 5        | The Fellowship of the Ring               | Science Fiction & Fantasy | 178     | 2001            | 2.59          |
+| 6        | Harry Potter and the Philosopher's Stone | Science Fiction & Fantasy | 152     | 2001            | 2.69          |
+| ...      | ...                                      | ...                       | ...     | ...             | ...           |
+
+Note: The comedy 'What women want' has an average rating higher than 8. We didn't need to use a GROUP BY clause to answer this request.
+
+
