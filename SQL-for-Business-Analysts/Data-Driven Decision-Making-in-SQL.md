@@ -1210,3 +1210,65 @@ WHERE 8 < -- Select all movies with an average rating higher than 8
 Note: The comedy 'What women want' has an average rating higher than 8. We didn't need to use a GROUP BY clause to answer this request.
 
 
+**</> Customers with at least one rating**
+
+Having active customers is a key performance indicator for MovieNow. Make a list of customers who gave at least one rating.
+
+- Select all records of movie rentals from customer with ID 115.
+
+```sql
+-- Select all records of movie rentals from customer with ID 115
+SELECT *
+FROM renting
+WHERE customer_id = 115;
+```
+
+| renting_id | customer_id | movie_id | rating | date_renting |
+|------------|-------------|----------|--------|--------------|
+| 245        | 115         | 69       | null   | 2019-04-24   |
+| 395        | 115         | 11       | null   | 2019-04-07   |
+| 498        | 115         | 42       | null   | 2019-03-16   |
+
+
+- Select all records of movie rentals from the customer with ID 115 and exclude records with null ratings.
+
+```sql
+SELECT *
+FROM renting
+WHERE rating IS NOT NULL -- Exclude those with null ratings
+AND customer_id = 115;
+```
+
+- Select all records of movie rentals from the customer with ID 1, excluding null ratings.
+
+```sql
+SELECT *
+FROM renting
+WHERE rating IS NOT NULL -- Exclude null ratings
+AND customer_id = 1; -- Select all ratings from customer with ID 1
+```
+
+| renting_id | customer_id | movie_id | rating | date_renting |
+|------------|-------------|----------|--------|--------------|
+| 421        | 1           | 71       | 10     | 2019-01-21   |
+| 520        | 1           | 39       | 6      | 2018-12-29   |
+
+- Select all customers with at least one rating. Use the first letter of the table as an alias.
+
+```sql
+SELECT *
+FROM customers as c -- Select all customers with at least one rating
+WHERE EXISTS
+	(SELECT *
+	FROM renting AS r
+	WHERE rating IS NOT NULL 
+	AND r.customer_id = c.customer_id);
+```
+
+| customer_id | name               | country | gender | date_of_birth | date_account_start |
+|-------------|--------------------|---------|--------|---------------|--------------------|
+| 2           | Wolfgang Ackermann | Austria | male   | 1971-11-17    | 2018-10-15         |
+| 4           | Julia Jung         | Austria | female | 1991-01-04    | 2017-11-22         |
+| 7           | Annelous Sneep     | Belgium | female | 1993-11-14    | 2018-05-12         |
+| ...         | ...                | ...     | ...    | ...           | ...                |
+
