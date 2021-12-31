@@ -1272,3 +1272,81 @@ WHERE EXISTS
 | 7           | Annelous Sneep     | Belgium | female | 1993-11-14    | 2018-05-12         |
 | ...         | ...                | ...     | ...    | ...           | ...                |
 
+**</> Actors in comedies**
+
+In order to analyze the diversity of actors in comedies, first, report a list of actors who play in comedies and then, the number of actors for each nationality playing in comedies.
+
+- Select the records of all actors who play in a Comedy. Use the first letter of the table as an alias.
+
+```sql
+SELECT *  -- Select the records of all actors who play in a Comedy
+FROM actsin AS ai
+LEFT JOIN movies as m
+ON ai.movie_id = m.movie_id
+WHERE m.genre = 'Comedy';
+```
+
+| actsin_id | movie_id | actor_id | movie_id | title                | genre  | runtime | year_of_release | renting_price |
+|-----------|----------|----------|----------|----------------------|--------|---------|-----------------|---------------|
+| 2         | 56       | 2        | 56       | Jack and Jill        | Comedy | 91      | 2011            | 2.09          |
+| 6         | 56       | 3        | 56       | Jack and Jill        | Comedy | 91      | 2011            | 2.09          |
+| 9         | 7        | 6        | 7        | The Royal Tenenbaums | Comedy | 110     | 2002            | 1.89          |
+| ...       | ...      | ...      | ...      | ...                  | ...    | ...     | ...             | ...           |
+
+- Make a table of the records of actors who play in a Comedy and select only the actor with ID 1.
+
+```sql
+SELECT *
+FROM actsin AS ai
+LEFT JOIN movies AS m
+ON m.movie_id = ai.movie_id
+WHERE m.genre = 'Comedy'
+AND ai.actor_id = 1; -- Select only the actor with ID 1
+```
+
+- Create a list of all actors who play in a Comedy. Use the first letter of the table as an alias.
+
+```sql
+SELECT *
+FROM actors as a
+WHERE EXISTS
+	(SELECT *
+	 FROM actsin AS ai
+	 LEFT JOIN movies AS m
+	 ON m.movie_id = ai.movie_id
+	 WHERE m.genre = 'Comedy'
+	 AND ai.actor_id = a.actor_id);
+```
+
+| actor_id | name            | year_of_birth | nationality | gender |
+|----------|-----------------|---------------|-------------|--------|
+| 2        | Adam Sandler    | 1966          | USA         | male   |
+| 3        | Al Pacino       | 1940          | USA         | male   |
+| 6        | Anjelica Huston | 1951          | USA         | female |
+| ...      | ...             | ...           | ...         | ...    |
+
+- Report the nationality and the number of actors for each nationality.
+
+```sql
+SELECT a.nationality, count (*) -- Report the nationality and the number of actors for each nationality
+FROM actors AS a
+WHERE EXISTS
+	(SELECT ai.actor_id
+	 FROM actsin AS ai
+	 LEFT JOIN movies AS m
+	 ON m.movie_id = ai.movie_id
+	 WHERE m.genre = 'Comedy'
+	 AND ai.actor_id = a.actor_id)
+GROUP BY a.nationality;
+```
+
+| nationality      | count |
+|------------------|-------|
+| Northern Ireland | 1     |
+| USA              | 22    |
+| South Africa     | 1     |
+| Canada           | 1     |
+| British          | 3     |
+
+Note: There is one actor each coming from South Africa, Canada and Northen Ireland, three actors from Great Britain, and 22 from the USA who played in a Comedy.
+
