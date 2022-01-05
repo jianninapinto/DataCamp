@@ -1501,3 +1501,165 @@ WHERE movie_id IN-- Select all movies of genre drama with average rating higher 
 | movie_id | title                  | genre | runtime | year_of_release | renting_price |
 |----------|------------------------|-------|---------|-----------------|---------------|
 | 42       | No Country for Old Men | Drama | 122     | 2007            | 1.49          |
+
+
+# 4 Data Driven Decision Making with OLAP SQL queries
+
+**</> Groups of customers**
+
+Use the CUBE operator to extract the content of a pivot table from the database. Create a table with the total number of male and female customers from each country.
+
+- Create a table with the total number of customers, of all female and male customers, of the number of customers for each country and the number of men and women from each country.
+
+```sql
+SELECT gender, -- Extract information of a pivot table of gender and country for the number of customers
+	   country,
+	   COUNT(*)
+FROM customers
+GROUP BY CUBE (country, gender)
+ORDER BY country;
+```
+
+| gender | country | count |
+|--------|---------|-------|
+| female | Austria | 3     |
+| male   | Austria | 1     |
+| null   | Austria | 4     |
+| male   | Belgium | 3     |
+| null   | Belgium | 6     |
+| female | Belgium | 3     |
+| ...    | ...     | ...   |
+
+**</> Categories of movies**
+
+Give an overview on the movies available on MovieNow. List the number of movies for different genres and release years.
+
+- List the number of movies for different genres and the year of release on all aggregation levels by using the CUBE operator.
+
+```sql
+SELECT year_of_release,
+       genre,
+       COUNT(*)
+FROM movies
+GROUP BY CUBE(genre,year_of_release)
+ORDER BY year_of_release;
+```
+
+| year_of_release | genre                     | count |
+|-----------------|---------------------------|-------|
+| 2001            | null                      | 6     |
+| 2001            | Drama                     | 2     |
+| 2001            | Comedy                    | 2     |
+| 2001            | Science Fiction & Fantasy | 2     |
+| 2002            | Comedy                    | 3     |
+| 2002            | null                      | 7     |
+| ...             | ...                       | ...   |
+
+**- Question**
+
+Which statement is NOT correct about the result table?
+
+Possible Answers
+
+a. From all genres (ignoring the year of release) there are most movies in the category Drama.
+
+b. In total there are 71 movies available on MovieNow.
+
+`c. The year of release with most movies is 2014.`
+
+d. From 2002 there are 2 dramas available on MovieNow.
+
+Note: Only one movie from 2014 is available on MovieNow. The highest number of movies is from 2003 with 8 movies.
+
+**</> Analyzing average ratings**
+
+Prepare a table for a report about the national preferences of the customers from MovieNow comparing the average rating of movies across countries and genres.
+
+- Augment the records of movie rentals with information about movies and customers, in this order. Use the first letter of the table names as alias.
+
+```sql
+-- Augment the records of movie rentals with information about movies and customers
+SELECT *
+FROM movies as m
+LEFT JOIN renting as r
+ON m.movie_id = r.movie_id
+LEFT JOIN customers as c
+ON r.customer_id = c.customer_id;
+```
+
+| movie_id | title             | genre  | runtime | year_of_release | renting_price | renting_id | customer_id | movie_id | rating | date_renting | customer_id | name            | country      | gender | date_of_birth | date_account_start |
+|----------|-------------------|--------|---------|-----------------|---------------|------------|-------------|----------|--------|--------------|-------------|-----------------|--------------|--------|---------------|--------------------|
+| 8        | Waking Up in Reno | Comedy | 91      | 2002            | 2.59          | 1          | 41          | 8        | null   | 2018-10-09   | 41          | Zara Mitchell   | Great Britan | female | 1994-07-08    | 2017-06-12         |
+| 29       | Two for the Money | Drama  | 122     | 2005            | 2.79          | 2          | 10          | 29       | 10     | 2017-03-01   | 10          | Arnout Veenhuis | Belgium      | male   | 1984-07-26    | 2017-01-28         |
+| ...      | ...               | ...    | ...     | ...             | ...           | ...        | ...         | ...      | ...    | ...          | ...         | ...             | ...          | ...    | ...           | ...                |
+
+- Calculate the average rating for each country.
+
+```sql
+-- Calculate the average rating for each country
+SELECT 
+	country,
+    AVG(r.rating)
+FROM renting AS r
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+GROUP BY country;
+```
+
+| country      | avg                |
+|--------------|--------------------|
+| null         | 8.0000000000000000 |
+| Spain        | 7.6415094339622642 |
+| Great Britan | 7.5200000000000000 |
+| Austria      | 6.8000000000000000 |
+| Poland       | 8.1212121212121212 |
+| Italy        | 8.1379310344827586 |
+| Slovenia     | 8.4318181818181818 |
+| Hungary      | 7.6285714285714286 |
+| Denmark      | 7.8888888888888889 |
+| Belgium      | 8.9000000000000000 |
+| France       | 7.7714285714285714 |
+| USA          | 8.0000000000000000 |
+
+- Calculate the average rating for all aggregation levels of country and genre.
+
+```sql
+SELECT 
+	country, 
+	genre, 
+	AVG(r.rating) AS avg_rating -- Calculate the average rating 
+FROM renting AS r
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+GROUP BY CUBE (country, genre); -- For all aggregation levels of country and genre
+```
+
+| country  | genre              | avg_rating         |
+|----------|--------------------|--------------------|
+| null     | null               | 7.9390243902439024 |
+| France   | Mystery & Suspense | 6.0000000000000000 |
+| Slovenia | Action & Adventure | null               |
+| Spain    | Animation          | null               |
+| ...      | ...                | ...                |
+
+**- Question**
+
+What is the average rating over all records, rounded to two digits?
+
+Possible Answers
+
+`a. 7.94`
+
+b. null
+
+c. 8.80
+
+d. 7.86
+
+Note: The average over all records is 7.94.
+
+
