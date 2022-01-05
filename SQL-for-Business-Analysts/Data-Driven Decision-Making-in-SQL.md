@@ -1350,3 +1350,85 @@ GROUP BY a.nationality;
 
 Note: There is one actor each coming from South Africa, Canada and Northen Ireland, three actors from Great Britain, and 22 from the USA who played in a Comedy.
 
+**</> Young actors not coming from the USA**
+
+As you've just seen, the operators UNION and INTERSECT are powerful tools when you work with two or more tables. Identify actors who are not from the USA and actors who were born after 1990.
+
+- Report the name, nationality and the year of birth of all actors who are not from the USA.
+
+```sql
+SELECT name,  -- Report the name, nationality and the year of birth
+       nationality, 
+       year_of_birth
+FROM actors
+WHERE NOT nationality = 'USA'; -- Of all actors who are not from the USA
+```
+
+| name               | nationality | year_of_birth |
+|--------------------|-------------|---------------|
+| Abbie Cornish      | Australia   | 1982          |
+| Andrea Riseborough | British     | 1981          |
+| Anthony Hopkins    | British     | 1937          |
+| ...                | ...         | ...           |
+
+- Report the name, nationality and the year of birth of all actors who were born after 1990.
+
+```sql
+SELECT name, 
+       nationality, 
+       year_of_birth
+FROM actors
+WHERE year_of_birth > 1990; -- Born after 1990
+```
+
+| name             | nationality | year_of_birth |
+|------------------|-------------|---------------|
+| Annasophia Robb  | USA         | 1993          |
+| Freddie Highmore | British     | 1992          |
+| Josh Hutcherson  | USA         | 1992          |
+
+- Select all actors who are not from the USA and all actors who are born after 1990.
+
+```sql
+SELECT name, 
+       nationality, 
+       year_of_birth
+FROM actors
+WHERE nationality <> 'USA'
+UNION -- Select all actors who are not from the USA and all actors who are born after 1990
+SELECT name, 
+       nationality, 
+       year_of_birth
+FROM actors
+WHERE year_of_birth > 1990;
+```
+
+| name           | nationality | year_of_birth |
+|----------------|-------------|---------------|
+| Cate Blanchett | Australia   | 1969          |
+| Julie Christie | British     | 1940          |
+| Emma Watson    | British     | 1990          |
+| ...            | ...         | ...           |
+
+- Select all actors who are not from the USA and who are also born after 1990.
+
+```sql
+SELECT name, 
+       nationality, 
+       year_of_birth
+FROM actors
+WHERE nationality <> 'USA'
+INTERSECT -- Select all actors who are not from the USA and who are also born after 1990
+SELECT name, 
+       nationality, 
+       year_of_birth
+FROM actors
+WHERE year_of_birth > 1990;
+```
+
+| name             | nationality | year_of_birth |
+|------------------|-------------|---------------|
+| Freddie Highmore | British     | 1992          |
+
+
+
