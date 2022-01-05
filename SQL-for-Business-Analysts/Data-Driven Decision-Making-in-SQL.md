@@ -1431,4 +1431,73 @@ WHERE year_of_birth > 1990;
 | Freddie Highmore | British     | 1992          |
 
 
+**</> Dramas with high ratings**
 
+The advertising team has a new focus. They want to draw the attention of the customers to dramas. Make a list of all movies that are in the drama genre and have an average rating higher than 9.
+
+- Select the IDs of all dramas.
+
+```sql
+SELECT movie_id -- Select the IDs of all dramas
+FROM movies
+WHERE genre = 'Drama';
+```
+
+| movie_id |
+|----------|
+| 2        |
+| 4        |
+| 9        |
+| ...      |
+
+- Select the IDs of all movies with average rating higher than 9.
+
+```sql
+SELECT movie_id -- Select the IDs of all movies with average rating higher than 9
+FROM renting
+GROUP BY movie_id
+HAVING AVG(rating) > 9;
+```
+| movie_id |
+|----------|
+| 63       |
+| 42       |
+| 48       |
+| 5        |
+
+- Select the IDs of all dramas with average rating higher than 9.
+
+```sql
+SELECT movie_id
+FROM movies
+WHERE genre = 'Drama'
+INTERSECT  -- Select the IDs of all dramas with average rating higher than 9
+SELECT movie_id
+FROM renting
+GROUP BY movie_id
+HAVING AVG(rating)>9;
+```
+
+| movie_id |
+|----------|
+| 42       |
+
+- Select all movies of in the drama genre with an average rating higher than 9.
+
+```sql
+SELECT *
+FROM movies
+WHERE movie_id IN-- Select all movies of genre drama with average rating higher than 9
+   (SELECT movie_id
+    FROM movies
+    WHERE genre = 'Drama'
+    INTERSECT
+    SELECT movie_id
+    FROM renting
+    GROUP BY movie_id
+    HAVING AVG(rating)>9);
+```
+
+| movie_id | title                  | genre | runtime | year_of_release | renting_price |
+|----------|------------------------|-------|---------|-----------------|---------------|
+| 42       | No Country for Old Men | Drama | 122     | 2007            | 1.49          |
