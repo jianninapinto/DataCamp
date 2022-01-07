@@ -1761,3 +1761,32 @@ ORDER BY c.country, m.genre;
 | Austria | Science Fiction & Fantasy | 6.6666666666666667 | 3          |
 | Austria | null                      | 6.8000000000000000 | 7          |
 | ...     | ...                       | ...                | ...        |
+
+
+**</> Queries with GROUPING SETS**
+
+What question CANNOT be answered by the following query?
+
+```sql
+SELECT 
+  r.customer_id, 
+  m.genre, 
+  AVG(r.rating), 
+  COUNT(*)
+FROM renting AS r
+LEFT JOIN movies AS m
+ON r.movie_id = m.movie_id
+GROUP BY GROUPING SETS ((r.customer_id, m.genre), (r.customer_id), ());
+```
+
+Possible Answers
+
+1. How many movies were watched by each customer?
+
+`2. What is the average rating for each genre?`
+
+3. What is the average rating of customer 75 for movies of the Comedy genre?
+
+4. What is the overall average rating for all movies from all customers?
+
+Note: GROUPING SETS does not include (genre) (i.e. does not include aggregation for each genre).
