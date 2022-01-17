@@ -2059,3 +2059,131 @@ ORDER BY avg_rating DESC; -- Order the table by decreasing average rating
 
 Note: Action & Adventure has the highest rating.
 
+**</> Customer preference for actors**
+
+The last aspect you have to analyze are customer preferences for certain actors.
+
+- Join the tables.
+
+```sql
+-- Join the tables
+SELECT *
+FROM renting AS r
+LEFT JOIN actsin AS ai
+ON r.movie_id = ai.movie_id
+LEFT JOIN actors AS a
+ON ai.actor_id = a.actor_id;
+```
+| renting_id | customer_id | movie_id | rating | date_renting | actsin_id | movie_id | actor_id | actor_id | name               | year_of_birth | nationality  | gender |
+|------------|-------------|----------|--------|--------------|-----------|----------|----------|----------|--------------------|---------------|--------------|--------|
+| 1          | 41          | 8        | null   | 2018-10-09   | 160       | 8        | 107      | 107      | Patrick Swayze     | 1952          | USA          | male   |
+| 1          | 41          | 8        | null   | 2018-10-09   | 152       | 8        | 103      | 103      | Natasha Richardson | 1963          | British      | female |
+| 1          | 41          | 8        | null   | 2018-10-09   | 28        | 8        | 23       | 23       | Charlize Theron    | 1975          | South Africa | female |
+| ...        | ...         | ...      | ...    | ...          | ...       | ...      | ...      | ...      | ...                | ...           | ...          | ...    |
+
+
+- For each combination of the actors' nationality and gender, calculate the average rating, the number of ratings, the number of movie rentals, and the number of actors.
+
+```sql
+SELECT a.nationality,
+       a.gender,
+	   AVG(r.rating) AS avg_rating, -- The average rating
+	   COUNT(r.rating) AS n_rating, -- The number of ratings
+	   COUNT(*) AS n_rentals, -- The number of movie rentals
+	   COUNT(DISTINCT a.actor_id) AS n_actors -- The number of actors
+FROM renting AS r
+LEFT JOIN actsin AS ai
+ON ai.movie_id = r.movie_id
+LEFT JOIN actors AS a
+ON ai.actor_id = a.actor_id
+WHERE r.movie_id IN ( 
+	SELECT movie_id
+	FROM renting
+	GROUP BY movie_id
+	HAVING COUNT(rating) >=4 )
+AND r.date_renting >= '2018-04-01'
+GROUP BY a.nationality, a.gender; -- Report results for each combination of the actors' nationality and gender
+```
+| nationality      | gender | avg_rating         | n_rating | n_rentals | n_actors |
+|------------------|--------|--------------------|----------|-----------|----------|
+| Argentina        | male   | 8.5000000000000000 | 4        | 5         | 1        |
+| Australia        | female | 8.6666666666666667 | 3        | 5         | 1        |
+| Australia        | male   | 7.4545454545454545 | 11       | 17        | 3        |
+| Austria          | male   | 8.5000000000000000 | 2        | 6         | 1        |
+| British          | female | 7.8333333333333333 | 54       | 78        | 3        |
+| British          | male   | 8.1052631578947368 | 114      | 175       | 9        |
+| Canada           | female | 8.0000000000000000 | 5        | 5         | 1        |
+| Canada           | male   | 8.4285714285714286 | 7        | 13        | 2        |
+| Ireland          | male   | 7.7142857142857143 | 7        | 16        | 2        |
+| Israel           | female | 8.2500000000000000 | 4        | 8         | 1        |
+| Italy            | female | 9.0000000000000000 | 4        | 4         | 1        |
+| Northern Ireland | male   | 9.0000000000000000 | 4        | 4         | 1        |
+| Puerto Rico      | male   | 7.2000000000000000 | 5        | 7         | 1        |
+| Somalia          | male   | 7.0000000000000000 | 3        | 5         | 1        |
+| South Africa     | female | 8.2142857142857143 | 14       | 21        | 1        |
+| Spain            | female | 8.5000000000000000 | 4        | 5         | 1        |
+| Spain            | male   | 8.8571428571428571 | 7        | 12        | 2        |
+| USA              | female | 7.5454545454545455 | 121      | 212       | 27       |
+| USA              | male   | 7.9132231404958678 | 242      | 401       | 42       |
+
+- Provide results for all aggregation levels represented in a pivot table.
+
+```sql
+SELECT a.nationality,
+       a.gender,
+	   AVG(r.rating) AS avg_rating,
+	   COUNT(r.rating) AS n_rating,
+	   COUNT(*) AS n_rentals,
+	   COUNT(DISTINCT a.actor_id) AS n_actors
+FROM renting AS r
+LEFT JOIN actsin AS ai
+ON ai.movie_id = r.movie_id
+LEFT JOIN actors AS a
+ON ai.actor_id = a.actor_id
+WHERE r.movie_id IN ( 
+	SELECT movie_id
+	FROM renting
+	GROUP BY movie_id
+	HAVING COUNT(rating) >= 4)
+AND r.date_renting >= '2018-04-01'
+GROUP BY GROUPING SETS ((nationality, gender), (nationality), (gender), ()); -- Provide results for all aggregation levels represented in a pivot table
+```
+
+| nationality      | gender | avg_rating         | n_rating | n_rentals | n_actors |
+|------------------|--------|--------------------|----------|-----------|----------|
+| Argentina        | male   | 8.5000000000000000 | 4        | 5         | 1        |
+| Argentina        | null   | 8.5000000000000000 | 4        | 5         | 1        |
+| Australia        | female | 8.6666666666666667 | 3        | 5         | 1        |
+| Australia        | male   | 7.4545454545454545 | 11       | 17        | 3        |
+| Australia        | null   | 7.7142857142857143 | 14       | 22        | 4        |
+| Austria          | male   | 8.5000000000000000 | 2        | 6         | 1        |
+| Austria          | null   | 8.5000000000000000 | 2        | 6         | 1        |
+| British          | female | 7.8333333333333333 | 54       | 78        | 3        |
+| British          | male   | 8.1052631578947368 | 114      | 175       | 9        |
+| British          | null   | 8.0178571428571429 | 168      | 253       | 12       |
+| Canada           | female | 8.0000000000000000 | 5        | 5         | 1        |
+| Canada           | male   | 8.4285714285714286 | 7        | 13        | 2        |
+| Canada           | null   | 8.2500000000000000 | 12       | 18        | 3        |
+| Ireland          | male   | 7.7142857142857143 | 7        | 16        | 2        |
+| Ireland          | null   | 7.7142857142857143 | 7        | 16        | 2        |
+| Israel           | female | 8.2500000000000000 | 4        | 8         | 1        |
+| Israel           | null   | 8.2500000000000000 | 4        | 8         | 1        |
+| Italy            | female | 9.0000000000000000 | 4        | 4         | 1        |
+| Italy            | null   | 9.0000000000000000 | 4        | 4         | 1        |
+| Northern Ireland | male   | 9.0000000000000000 | 4        | 4         | 1        |
+| Northern Ireland | null   | 9.0000000000000000 | 4        | 4         | 1        |
+| Puerto Rico      | male   | 7.2000000000000000 | 5        | 7         | 1        |
+| Puerto Rico      | null   | 7.2000000000000000 | 5        | 7         | 1        |
+| Somalia          | male   | 7.0000000000000000 | 3        | 5         | 1        |
+| Somalia          | null   | 7.0000000000000000 | 3        | 5         | 1        |
+| South Africa     | female | 8.2142857142857143 | 14       | 21        | 1        |
+| South Africa     | null   | 8.2142857142857143 | 14       | 21        | 1        |
+| Spain            | female | 8.5000000000000000 | 4        | 5         | 1        |
+| Spain            | male   | 8.8571428571428571 | 7        | 12        | 2        |
+| Spain            | null   | 8.7272727272727273 | 11       | 17        | 3        |
+| USA              | female | 7.5454545454545455 | 121      | 212       | 27       |
+| USA              | male   | 7.9132231404958678 | 242      | 401       | 42       |
+| USA              | null   | 7.7906336088154270 | 363      | 613       | 69       |
+| null             | null   | 7.9024390243902439 | 615      | 999       | 101      |
+| null             | female | 7.7511961722488038 | 209      | 338       | 36       |
+| null             | male   | 7.9802955665024631 | 406      | 661       | 65       |
