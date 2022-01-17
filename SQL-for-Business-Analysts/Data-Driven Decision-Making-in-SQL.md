@@ -1950,3 +1950,5 @@ GROUP BY GROUPING SETS ((country, gender), (country), (gender), ());
 | null         | null   | 8.0000000000000000 |
 | null         | female | 8.0529411764705882 |
 | null         | male   | 7.8141025641025641 |
+
+Note: The overall average of ratings is 7.9.
