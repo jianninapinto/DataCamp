@@ -1790,3 +1790,42 @@ Possible Answers
 4. What is the overall average rating for all movies from all customers?
 
 Note: GROUPING SETS does not include (genre) (i.e. does not include aggregation for each genre).
+
+**</> Exploring nationality and gender of actors**
+
+For each movie in the database, the three most important actors are identified and listed in the table actors. This table includes the nationality and gender of the actors. We are interested in how much diversity there is in the nationalities of the actors and how many actors and actresses are in the list.
+
+- Count the number of actors in the table actors from each country, the number of male and female actors and the total number of actors.
+
+```sql
+SELECT 
+	nationality, -- Select nationality of the actors
+    gender, -- Select gender of the actors
+    COUNT(*) -- Count the number of actors
+FROM actors
+GROUP BY GROUPING SETS ((nationality), (gender), ()); -- Use the correct GROUPING SETS operation
+```
+| nationality      | gender | count |
+|------------------|--------|-------|
+| null             | null   | 145   |
+| Somalia          | null   | 1     |
+| null             | null   | 2     |
+| Argentina        | null   | 1     |
+| Spain            | null   | 3     |
+| Italy            | null   | 1     |
+| Puerto Rico      | null   | 1     |
+| Iran             | null   | 1     |
+| Northern Ireland | null   | 2     |
+| USA              | null   | 91    |
+| Israel           | null   | 1     |
+| Netherlands      | null   | 1     |
+| South Africa     | null   | 1     |
+| Austria          | null   | 1     |
+| Australia        | null   | 8     |
+| Ireland          | null   | 2     |
+| Canada           | null   | 4     |
+| British          | null   | 24    |
+| null             | male   | 90    |
+| null             | female | 55    |
+
+
