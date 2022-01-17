@@ -1828,4 +1828,125 @@ GROUP BY GROUPING SETS ((nationality), (gender), ()); -- Use the correct GROUPIN
 | null             | male   | 90    |
 | null             | female | 55    |
 
+Note: 91 out of 145 actors are from the USA and that there are 90 male and 55 female actors.
 
+**</> Exploring rating by country and gender**
+
+Now you will investigate the average rating of customers aggregated by country and gender.
+
+1. - Select the columns country, gender, and rating and use the correct join to combine the table renting with customer.
+
+```sql
+SELECT 
+	country, -- Select country, gender and rating
+    gender,
+    rating
+FROM renting AS r
+LEFT JOIN customers AS c -- Use the correct join
+ON r.customer_id = c.customer_id;
+```
+
+| country      | gender | rating |
+|--------------|--------|--------|
+| Great Britan | female | null   |
+| Belgium      | male   | 10     |
+| Spain        | male   | 4      |
+| Great Britan | female | 8      |
+| ...          | ...    | ...    |
+
+2. - Use GROUP BY to calculate the average rating over country and gender. Order the table by country and gender.
+
+```sql
+SELECT 
+	c.country, 
+    c.gender,
+	AVG(rating) -- Calculate average rating
+FROM renting AS r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+GROUP BY country, gender -- Order and group by country and gender
+ORDER BY country, gender;
+```
+| country | gender | avg                |
+|---------|--------|--------------------|
+| Austria | female | 7.0000000000000000 |
+| Austria | male   | 6.0000000000000000 |
+| Belgium | female | 9.1250000000000000 |
+| Belgium | male   | 8.0000000000000000 |
+| ...     | ...    | ...                |
+
+3. - Now, use GROUPING SETS to get the same result, i.e. the average rating over country and gender.
+
+```sql
+SELECT 
+	c.country, 
+    c.gender,
+	AVG(r.rating)
+FROM renting AS r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+GROUP BY GROUPING SETS ((country, gender)) ; -- Group by country and gender with GROUPING SETS
+```
+
+| country | gender | avg                |
+|---------|--------|--------------------|
+| Austria | male   | 6.0000000000000000 |
+| France  | female | 8.0000000000000000 |
+| Hungary | female | 7.2857142857142857 |
+| Belgium | male   | 8.0000000000000000 |
+| ...     | ...    | ...                |
+
+4. - Report all information that is included in a pivot table for country and gender in one SQL table.
+
+```sql
+SELECT 
+	c.country, 
+    c.gender,
+	AVG(r.rating)
+FROM renting AS r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+-- Report all info from a Pivot table for country and gender
+GROUP BY GROUPING SETS ((country, gender), (country), (gender), ());
+```
+| country      | gender | avg                |
+|--------------|--------|--------------------|
+| null         | null   | 7.9390243902439024 |
+| Austria      | male   | 6.0000000000000000 |
+| France       | female | 8.0000000000000000 |
+| Hungary      | female | 7.2857142857142857 |
+| null         | null   | 8.0000000000000000 |
+| Spain        | female | 7.6129032258064516 |
+| Belgium      | male   | 8.0000000000000000 |
+| USA          | male   | 7.5000000000000000 |
+| Denmark      | female | 8.4444444444444444 |
+| Austria      | female | 7.0000000000000000 |
+| Slovenia     | male   | 8.0909090909090909 |
+| Belgium      | female | 9.1250000000000000 |
+| Slovenia     | female | 8.5454545454545455 |
+| Italy        | female | 8.3666666666666667 |
+| Denmark      | male   | 7.3333333333333333 |
+| Great Britan | male   | 7.7142857142857143 |
+| France       | male   | 7.6666666666666667 |
+| Poland       | female | 7.8666666666666667 |
+| Spain        | male   | 7.6818181818181818 |
+| Italy        | male   | 7.8928571428571429 |
+| USA          | female | 8.7500000000000000 |
+| Great Britan | female | 7.2727272727272727 |
+| Hungary      | male   | 7.8571428571428571 |
+| Poland       | male   | 8.3333333333333333 |
+| null         | null   | 8.0000000000000000 |
+| Spain        | null   | 7.6415094339622642 |
+| Great Britan | null   | 7.5200000000000000 |
+| Austria      | null   | 6.8000000000000000 |
+| Poland       | null   | 8.1212121212121212 |
+| Italy        | null   | 8.1379310344827586 |
+| Slovenia     | null   | 8.4318181818181818 |
+| Hungary      | null   | 7.6285714285714286 |
+| Denmark      | null   | 7.8888888888888889 |
+| Belgium      | null   | 8.9000000000000000 |
+| France       | null   | 7.7714285714285714 |
+| USA          | null   | 8.0000000000000000 |
+| null         | null   | 8.0000000000000000 |
+| null         | female | 8.0529411764705882 |
+| null         | male   | 7.8141025641025641 |
